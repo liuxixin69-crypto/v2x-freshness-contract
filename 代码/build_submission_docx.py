@@ -790,9 +790,10 @@ for t, b in [
     ("Data Availability Statement",
      "The simulation kernel, per-seed CSV outputs, figure-generation scripts, and a one-command "
      "reproducibility package (reproduce.sh) support full reproducibility; all ~16,200 controlled "
-     "runs are seeded and re-runnable from a clean clone. The code and data are available from the "
-     "author upon reasonable request and will be deposited in a public repository (GitHub) with an "
-     "archived DOI (Zenodo) upon acceptance."),
+     "runs are seeded and re-runnable from a clean clone. The code and data are publicly archived: "
+     "the GitHub repository (https://github.com/liuxixin69-crypto/v2x-freshness-contract) and the "
+     "Zenodo archive with DOI 10.5281/zenodo.23995606 "
+     "(https://doi.org/10.5281/zenodo.23995606)."),
     ("Conflict of Interest",
      "The authors declare no conflict of interest."),
     ("Author Contributions",
@@ -891,7 +892,7 @@ checklist.append("- 删除 DRAFT NOTES 作者备注块；\n"
                  "  反解 A*=(1−δ)/(1−q_c)：δ=5% 时须 95.9%（每小时允许中断 2.5 min），最差链路 98.4%。\n")
 checklist.append("\n投稿前 P0（必须补）：\n")
 p0 = [
-    "GitHub 仓库：本地仓库已 git init 并提交（64 文件，复现包就绪）；GitHub 用户名 liuxixin69-crypto、仓库名 v2x-freshness-contract 已写入 CITATION.cff/zenodo.json；待你授权（PAT 或浏览器建仓后 git push）即可公开。Zenodo 元数据 zenodo.json 已就绪，待你 deposit 获得 DOI。",
+    "GitHub 仓库：已公开 https://github.com/liuxixin69-crypto/v2x-freshness-contract（65 文件）。Zenodo 已发布：DOI 10.5281/zenodo.23995606（Version 2.0, MIT），回填进正文 Data Availability 与 AUTHOR_INFO.md。",
     "BUPT 机构邮箱（2138385347@bupt.edu.cn，见主编意见 A6）✅；ORCID 0009-0005-4547-6074 ✅（已写入标题页 / 投稿信 / CITATION.cff / zenodo.json）。",
     "核对页数 < 20 页：v2.0 PDF = 16 页 ✅；最终校对 ✅（E13 审计 0 问题）。",
     "Funding（no external funding）/ Conflict of Interest（no conflict）已定稿 ✅。",

@@ -34,6 +34,6 @@
         "resource_type": "software"
       }
     ],
-    "notes": "Manuscript version v2.0. Creator name, affiliation, and GitHub repository URL are filled. Still to add before deposit: ORCID (if available) and the journal DOI once the manuscript is accepted. The upload_type 'software' is appropriate for a code+data reproduction package; switch to 'dataset' if only data are archived."
+    "notes": "Manuscript version v2.0. Creator name, affiliation, ORCID (0009-0005-4547-6074), and GitHub repository URL are filled. Deposited to Zenodo on 2026-11-06 (DOI 10.5281/zenodo.23995606, Version 2.0, MIT). The journal DOI (10.1109/ACCESS.XXXXXXX) is added after acceptance. The upload_type 'software' is appropriate for a code+data reproduction package."
   }
 }

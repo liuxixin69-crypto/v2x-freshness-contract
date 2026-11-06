@@ -18,6 +18,10 @@ version: "2.0"
 date-released: "2026-11-06"
 license: MIT
 repository-code: "https://github.com/liuxixin69-crypto/v2x-freshness-contract"
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23995606
+    description: The reproduction package archive on Zenodo (Version 2.0)
 keywords:
   - C-V2X
   - basic safety message

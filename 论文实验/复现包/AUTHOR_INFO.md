@@ -23,6 +23,6 @@ reproduction package (`CITATION.cff`, `zenodo.json`).
 - GitHub repository **published** as a public repo and pushed from the local
   git repository (remote `origin` set; default branch `main`). All commit
   authors/committers rewritten to the legal name Xixin Liu on 2026-11-06.
-- Zenodo DOI is still pending: upload this reproduction package to Zenodo after
-  acceptance, then back-fill the DOI into `zenodo.json` (line ~26) and the
-  Data Availability statement.
+- Zenodo DOI **assigned 2026-11-06**: `10.5281/zenodo.23995606`
+  (https://doi.org/10.5281/zenodo.23995606), Version 2.0, MIT license. Back-filled
+  into the manuscript Data Availability statement and `CITATION.cff`.

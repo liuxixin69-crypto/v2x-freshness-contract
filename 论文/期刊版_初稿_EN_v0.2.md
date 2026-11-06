@@ -286,7 +286,7 @@ The gap is the point, not a defect of the model. A memoryless geometric cannot p
 
 **External validity.** Three course-level one-dimensional scenarios, a design-parameter validity budget, no driver reaction model, no real vehicle, no standardized message set or security overhead. Results are trends under controlled degradation, not field predictions. The real traces of §6.8 lift one of these limits — burst length is now measured rather than assumed — but they were collected at walking-to-low speed on a campus, so high-speed highway behaviour remains inferred rather than observed.
 
-**Reproducibility.** Kernel, seeds, raw per-seed CSVs and figure-generating scripts accompany the submission and will be deposited in a public repository with an archived DOI upon acceptance (see the Data Availability Statement).
+**Reproducibility.** Kernel, seeds, raw per-seed CSVs and figure-generating scripts accompany the submission and are publicly archived in the GitHub repository (https://github.com/liuxixin69-crypto/v2x-freshness-contract) and the Zenodo archive with DOI 10.5281/zenodo.23995606 (https://doi.org/10.5281/zenodo.23995606) (see the Data Availability Statement).
 
 ---
 
