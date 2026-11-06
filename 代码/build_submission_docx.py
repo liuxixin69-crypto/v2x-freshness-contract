@@ -38,7 +38,7 @@ AUTHOR_META = {
     "affiliation_full": "International School, Beijing University of Posts and Telecommunications, "
                         "Beijing 100876, China",
     "email":        "2138385347@bupt.edu.cn",
-    "orcid":        "",                      # optional; fill "0000-0000-0000-0000" when available
+    "orcid":        "0009-0005-4547-6074",  # https://orcid.org/0009-0005-4547-6074
     "corresponding": True,                   # single author -> also corresponding author (\u2020)
 }
 COVER_DATE = "November 6, 2026"              # edit to actual submission date if needed
@@ -455,7 +455,13 @@ fp.paragraph_format.space_after = Pt(2)
 ep = doc.add_paragraph(); ep.alignment = WD_ALIGN_PARAGRAPH.CENTER
 er = ep.add_run("Email: " + AUTHOR_META["email"])
 er.font.size = Pt(9)
-ep.paragraph_format.space_after = Pt(8)
+ep.paragraph_format.space_after = Pt(2)
+
+if AUTHOR_META["orcid"]:
+    op = doc.add_paragraph(); op.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    orun = op.add_run("ORCID: https://orcid.org/" + AUTHOR_META["orcid"])
+    orun.font.size = Pt(9)
+    op.paragraph_format.space_after = Pt(8)
 
 # ----------------------------------------------------------------------------
 # Plan B（方案B）数据：加载 E9 分析结果，注入 V* 敏感性 / C2 突发实证 + 三张配图
@@ -886,13 +892,13 @@ checklist.append("- 删除 DRAFT NOTES 作者备注块；\n"
 checklist.append("\n投稿前 P0（必须补）：\n")
 p0 = [
     "GitHub 仓库：本地仓库已 git init 并提交（64 文件，复现包就绪）；GitHub 用户名 liuxixin69-crypto、仓库名 v2x-freshness-contract 已写入 CITATION.cff/zenodo.json；待你授权（PAT 或浏览器建仓后 git push）即可公开。Zenodo 元数据 zenodo.json 已就绪，待你 deposit 获得 DOI。",
-    "BUPT 机构邮箱（2138385347@bupt.edu.cn，见主编意见 A6）✅；ORCID 待补（需你提供 ORCID iD）。",
+    "BUPT 机构邮箱（2138385347@bupt.edu.cn，见主编意见 A6）✅；ORCID 0009-0005-4547-6074 ✅（已写入标题页 / 投稿信 / CITATION.cff / zenodo.json）。",
     "核对页数 < 20 页：v2.0 PDF = 16 页 ✅；最终校对 ✅（E13 审计 0 问题）。",
     "Funding（no external funding）/ Conflict of Interest（no conflict）已定稿 ✅。",
 ]
 for k, item in enumerate(p0, 1):
     checklist.append(f"{k}. {item}\n")
-checklist.append("\n作者信息（已完成）：Xixin Liu†（一作兼通讯，真名刘喜鑫，Nian Liu 为笔名），International School, Beijing University of Posts and Telecommunications；邮箱 2138385347@bupt.edu.cn。标题页 / 投稿信 / 作者贡献 / 作者简介 / CITATION.cff 已同步；ORCID 待补（需你提供 ORCID iD）。\n")
+checklist.append("\n作者信息（已完成）：Xixin Liu†（一作兼通讯，真名刘喜鑫，Nian Liu 为笔名），International School, Beijing University of Posts and Telecommunications；邮箱 2138385347@bupt.edu.cn；ORCID 0009-0005-4547-6074（已写入标题页 / 投稿信 / 作者简介 / CITATION.cff / zenodo.json）。\n")
 checklist.append("\n方案B 优化（已补，见正文 Fig.1–5 与 §3.3/§6.7/§6.8）：V* 敏感性表 + E2/E3 用 V* 重跑（E9，契约 FR 21.2%->10.9%）；C2 在 GE 突发下实证并推导 L_B 阈值（L_B≲7 包≈0.6–0.7s@10Hz）；真实 trace 复核（E11）+ 可用度预算（E12）；五张 IEEE 分辨率配图；一键复现包（论文实验/复现包/）。\n")
 checklist.append("\n原稿中标记的 [TBD] 清单（已在此版移除，仅作追踪）：\n")
 seen = []

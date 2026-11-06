@@ -6,7 +6,8 @@
     "creators": [
       {
         "name": "Liu, Xixin",
-        "affiliation": "International School, Beijing University of Posts and Telecommunications"
+        "affiliation": "International School, Beijing University of Posts and Telecommunications",
+        "orcid": "0009-0005-4547-6074"
       }
     ],
     "description": "Simulation kernel, per-seed CSV outputs, figure-generation scripts, and one-command reproducibility package (reproduce.sh) for the IEEE Access submission on an information-freshness contract for V2X collision warnings. ~16,200 controlled simulation runs; V* sensitivity table; Gilbert-Elliot burst validation of the C2 blind-run-tail contract.",
