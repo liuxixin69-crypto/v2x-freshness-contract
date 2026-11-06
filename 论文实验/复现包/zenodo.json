@@ -28,11 +28,11 @@
         "resource_type": "publication-article"
       },
       {
-        "identifier": "https://github.com/<owner>/v2x-freshness-contract (fill <owner> after repo creation)",
+        "identifier": "https://github.com/liuxixin69-crypto/v2x-freshness-contract",
         "relation": "isSupplementTo",
         "resource_type": "software"
       }
     ],
-    "notes": "Manuscript version v2.0. Creator name and affiliation are filled. Still to add before deposit: ORCID (if available), the concrete GitHub <owner>, and the journal DOI once the manuscript is accepted. The upload_type 'software' is appropriate for a code+data reproduction package; switch to 'dataset' if only data are archived."
+    "notes": "Manuscript version v2.0. Creator name, affiliation, and GitHub repository URL are filled. Still to add before deposit: ORCID (if available) and the journal DOI once the manuscript is accepted. The upload_type 'software' is appropriate for a code+data reproduction package; switch to 'dataset' if only data are archived."
   }
 }
