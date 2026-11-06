@@ -1,0 +1,40 @@
+cff-version: 1.2.0
+message: "If you use this software or the accompanying data, please cite the article below."
+title: "How Stale Is Too Stale? Bounding Consecutive Information Outages in V2X Collision Warning"
+abstract: >-
+  Simulation kernel, analysis scripts and figure generators for a
+  freshness-budget (C0), mean-loss (C1) and outage-tail (C2) safety-contract
+  study of V2X collision warning, including a re-validation of C2 against the
+  public NIST outdoor C-V2X capture dataset and an availability budget derived
+  from the measured coverage-outage process.
+type: software
+authors:
+  - family-names: "Liu"
+    given-names: "Nian"
+    affiliation: "International School, Beijing University of Posts and Telecommunications, Beijing 100876, China"
+    email: "2138385347@bupt.edu.cn"
+version: "1.7"
+date-released: "2026-11-06"
+license: MIT
+repository-code: "https://github.com/<owner>/v2x-freshness-contract"
+keywords:
+  - C-V2X
+  - basic safety message
+  - collision warning
+  - age of information
+  - information outage
+  - burst loss
+  - safety contract
+  - reproducible simulation
+references:
+  - type: generic
+    title: "Outdoor C-V2X Interoperability Testing Datasets (mds2-4003)"
+    authors:
+      - family-names: "Song"
+        given-names: "Edward"
+    publisher:
+      name: "National Institute of Standards and Technology"
+    doi: "10.18434/mds2-4003"
+    notes: >-
+      Field captures used in Section 6.8; raw PCAP files are not redistributed,
+      see data/C2_trace/raw/SOURCES.md for download locations and SHA-256 sums.

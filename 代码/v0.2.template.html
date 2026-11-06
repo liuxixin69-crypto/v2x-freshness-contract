@@ -1,0 +1,1093 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>V2X 预警死线 · 期末展示系统 v0.2</title>
+<style>
+  :root{
+    --bg:#f5f7fa; --card:#ffffff; --line:#e3e8ef; --ink:#1b2430; --muted:#6b7787;
+    --blue:#2563eb; --blue-soft:#e8f0fe; --red:#dc2626; --red-soft:#feecec;
+    --green:#16a34a; --green-soft:#e8f7ed; --amber:#ea580c; --amber-soft:#fff1e7;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--ink);
+    font-family:-apple-system,"Segoe UI","Microsoft YaHei",sans-serif;font-size:14px;line-height:1.6}
+  .wrap{max-width:1280px;margin:0 auto;padding:22px 20px 60px}
+  header h1{font-size:21px;margin:0 0 4px;font-weight:600}
+  header p{margin:0;color:var(--muted);font-size:13px}
+  .badge{display:inline-block;background:var(--blue-soft);color:var(--blue);border-radius:5px;
+    padding:1px 7px;font-size:12px;margin-left:8px;vertical-align:2px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:16px;margin-top:16px}
+  .card h2{font-size:15px;margin:0 0 12px;font-weight:600;display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+  .card h2 small{font-weight:400;color:var(--muted);font-size:12px}
+  .toolbar{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:16px}
+  .subbar{display:flex;flex-wrap:wrap;gap:7px;align-items:center;margin-top:10px;font-size:12px;color:var(--muted)}
+  .viewbar{display:flex;flex-wrap:wrap;gap:6px;margin-top:16px;border-bottom:1px solid var(--line);padding-bottom:0}
+  .viewbar button{border:0;border-radius:8px 8px 0 0;background:transparent;color:var(--muted);
+    padding:9px 16px;font-size:13.5px;border-bottom:2px solid transparent}
+  .viewbar button:hover{color:var(--blue);background:#eef3fb}
+  .viewbar button.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600;background:#eef3fb}
+  button{font:inherit;cursor:pointer;border:1px solid var(--line);background:#fff;color:var(--ink);
+    border-radius:7px;padding:7px 13px;transition:.15s}
+  button:hover{border-color:var(--blue);color:var(--blue)}
+  button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+  button.primary:hover{background:#1d4fd7;color:#fff}
+  button.active{background:var(--blue-soft);border-color:var(--blue);color:var(--blue)}
+  button.small{padding:5px 10px;font-size:12px}
+  button:disabled{opacity:.5;cursor:not-allowed}
+  select,input[type=text]{font:inherit;border:1px solid var(--line);border-radius:7px;padding:7px 9px;background:#fff}
+  .grid{display:grid;grid-template-columns:1.55fr 1fr;gap:16px;margin-top:16px}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:12px}
+  @media(max-width:900px){.grid,.grid2{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,1fr)}}
+  canvas{display:block;width:100%;background:#fbfcfe;border:1px solid var(--line);border-radius:8px}
+  .statusline{display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:12px;color:var(--muted)}
+  .statusline span{background:#f2f5f9;border-radius:5px;padding:3px 8px}
+  .packets{display:flex;gap:3px;margin-top:10px;flex-wrap:wrap;align-items:center}
+  .dot{width:9px;height:9px;border-radius:2px;background:var(--green)}
+  .dot.lost{background:var(--red)} .dot.empty{background:#dfe5ed}
+  .ctrl{margin-bottom:14px}
+  .ctrl label{display:flex;justify-content:space-between;font-size:13px;margin-bottom:5px}
+  .ctrl label b{color:var(--blue);font-variant-numeric:tabular-nums}
+  .ctrl .hint{font-size:11px;color:var(--muted);margin-top:3px}
+  input[type=range]{width:100%;accent-color:var(--blue)}
+  .warnbar{padding:8px 10px;border-radius:6px;font-size:12px;margin-top:8px}
+  .warnbar.ok{background:var(--green-soft);color:#12683a} .warnbar.bad{background:var(--red-soft);color:#a01c1c}
+  .metrics{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:14px}
+  .metric{background:#f7f9fc;border:1px solid var(--line);border-radius:7px;padding:9px 10px}
+  .metric .k{font-size:11px;color:var(--muted)}
+  .metric .v{font-size:19px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.3}
+  .metric .u{font-size:11px;color:var(--muted);font-weight:400}
+  .flag0{color:var(--green)} .flag1{color:var(--amber)} .flag2{color:var(--red)}
+  .verdict{margin-top:10px;padding:11px;border-radius:7px;font-size:13px;font-weight:600;text-align:center}
+  .verdict.safe{background:var(--green-soft);color:#12683a}
+  .verdict.late{background:var(--amber-soft);color:#9a3412}
+  .verdict.miss{background:var(--red-soft);color:#a01c1c}
+  .verdict.idle{background:#f2f5f9;color:#6b7787}
+  table{border-collapse:collapse;width:100%;font-size:12.5px;font-variant-numeric:tabular-nums}
+  th,td{border-bottom:1px solid var(--line);padding:7px 9px;text-align:right}
+  th:first-child,td:first-child{text-align:left}
+  th{background:#f7f9fc;color:var(--muted);font-weight:500}
+  .scroll{overflow-x:auto}
+  .notes{font-size:12.5px;color:#3d4857}
+  .notes h3{font-size:13px;margin:16px 0 6px;color:var(--ink)}
+  .notes ul{margin:6px 0;padding-left:20px} .notes li{margin:3px 0}
+  .caveat{background:var(--amber-soft);border-left:3px solid var(--amber);padding:10px 12px;
+    border-radius:0 6px 6px 0;margin-top:12px;font-size:12.5px}
+  code{background:#eef2f7;padding:1px 5px;border-radius:4px;font-size:12px}
+  .footer{color:var(--muted);font-size:12px;margin-top:22px;text-align:center}
+  .hidden{display:none !important}
+  .tourbar{background:#1e3a8a;color:#fff;border-radius:9px;padding:12px 16px;margin-top:14px;
+    display:flex;gap:12px;align-items:center;font-size:13.5px;box-shadow:0 4px 14px rgba(30,58,138,.18)}
+  .tourbar b{color:#fde68a}
+  .tourbar button{background:rgba(255,255,255,.16);border-color:rgba(255,255,255,.35);color:#fff;padding:5px 11px}
+  .tourbar button:hover{background:rgba(255,255,255,.28);color:#fff}
+  .legend{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--muted);flex-wrap:wrap;margin-top:10px}
+  .swatch{width:22px;height:12px;border-radius:2px;display:inline-block}
+  .tag{display:inline-block;border-radius:5px;padding:1px 7px;font-size:11.5px;background:#eef2f7;color:#475569;margin-left:6px}
+  .tag.hot{background:var(--red-soft);color:#a01c1c}
+  .tag.ok{background:var(--green-soft);color:#12683a}
+  .kpi{border:1px solid var(--line);border-radius:8px;padding:10px 12px;background:#f8fafc}
+  .kpi .k{font-size:11.5px;color:var(--muted)} .kpi .v{font-size:20px;font-weight:650;font-variant-numeric:tabular-nums}
+  .sharebox{margin-top:10px;display:flex;gap:8px;align-items:center}
+  .sharebox input{flex:1;min-width:280px}
+  .hintline{font-size:12px;color:var(--muted);margin-top:8px}
+  #selftest{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+  <h1>V2X 预警死线 · 通信退化可视化 <span class="badge">v0.2 · 四种展示视图 · 离线单文件</span></h1>
+  <p>《智能网联驾驶技术及应用》期末项目 · 复现课件预警逻辑，注入丢包与时延，观察「预警还来不来得及」</p>
+</header>
+
+<div class="toolbar">
+  <button class="active" data-scene="fcw">FCW 前向碰撞</button>
+  <button data-scene="ebw">EBW 紧急制动</button>
+  <button data-scene="icw">ICW 路口前车</button>
+  <span style="flex:1"></span>
+  <button id="btnPlay" class="primary">暂停</button>
+  <button id="btnStep">单步</button>
+  <button id="btnReset">重置</button>
+  <select id="speed"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select>
+</div>
+<div class="subbar">
+  <span>链路预设：</span>
+  <button class="small" data-preset="ideal">理想链路</button>
+  <button class="small" data-preset="gpp">3GPP 边界 100 ms</button>
+  <button class="small" data-preset="real">真实链路量级</button>
+  <button class="small" data-preset="crowd">拥塞退化</button>
+  <button class="small" data-preset="severe">严重退化</button>
+  <span id="presetNote" style="margin-left:6px">点一个预设，看右侧判定怎么翻转</span>
+</div>
+<div class="toolbar" style="margin-top:12px">
+  <button id="btnTour" class="primary">▶ 一键现场导览（4 步）</button>
+  <button id="btnPng">导出当前视图 PNG</button>
+  <button id="btnShare">生成分享链接</button>
+  <span style="color:var(--muted);font-size:12px">图片可直接贴进 PPT；链接可发给队友复现同一组参数</span>
+</div>
+<div class="sharebox hidden" id="shareBox">
+  <input type="text" id="shareUrl" readonly>
+  <button class="small" id="btnCopy">复制</button>
+</div>
+<div class="tourbar hidden" id="tourBar">
+  <span id="tourText"></span>
+  <span style="flex:1"></span>
+  <button class="small" id="btnTourStop">停止导览</button>
+</div>
+
+<div class="viewbar" id="viewBar">
+  <button class="active" data-view="replay">① 单次回放</button>
+  <button data-view="compare">② 并排对照</button>
+  <button data-view="heat">③ 预警可行域</button>
+  <button data-view="aoi">④ 信息年龄解剖</button>
+</div>
+
+<!-- ======================= 视图 ① 单次回放 ======================= -->
+<section id="view-replay">
+  <div class="grid">
+    <div class="card">
+      <h2>场景 <small id="sceneDesc"></small></h2>
+      <canvas id="scene" width="760" height="330"></canvas>
+      <div class="statusline">
+        <span>t = <b id="sTime">0.00</b> s</span>
+        <span>投递 <b id="sPkt">0 / 0</b></span>
+        <span>丢失 <b id="sLost">0</b></span>
+        <span>AoI <b id="sAoi">—</b> ms</span>
+        <span>信息失明 <b id="sBlind">0</b> %</span>
+        <span>关键时刻 <b id="sCrit">—</b> s</span>
+      </div>
+      <div class="packets" id="packets"></div>
+      <div class="statusline" style="margin-top:6px">
+        <span style="background:none;padding-left:0">绿点 = BSM 送达，红点 = 丢包，灰点 = 未产生</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <h2>通信注入 <small>拖动即重播</small></h2>
+      <div class="ctrl">
+        <label>丢包率 <b><span id="vLoss">0</span> %</b></label>
+        <input type="range" id="loss" min="0" max="90" step="5" value="0">
+        <div class="hint">按帧独立丢弃；丢弃时主车沿用上一帧 BSM（hold-last）</div>
+      </div>
+      <div class="ctrl">
+        <label>单程时延 <b><span id="vTau">0</span> ms</b></label>
+        <input type="range" id="tau" min="0" max="1000" step="10" value="0">
+        <div class="hint">3GPP TS 22.185：V2V 端到端 ≤100 ms，预碰撞感知 20 ms</div>
+      </div>
+      <div class="ctrl">
+        <label>BSM 发送频率 <b><span id="vFreq">10</span> Hz</b></label>
+        <input type="range" id="freq" min="1" max="10" step="1" value="10">
+        <div class="hint">对应课件第 3 章台架实验的「发包频率」；降频等价于带宽受限</div>
+      </div>
+      <div class="ctrl">
+        <label>BSM 有效期 <b><span id="vValid">500</span> ms</b></label>
+        <input type="range" id="tvalid" min="100" max="1000" step="50" value="500">
+        <div class="hint">AoI 超过它就判「信息失明」，本帧不预警。拖到 100 ms 可对照 3GPP 死线</div>
+      </div>
+      <div class="ctrl" style="margin-bottom:6px">
+        <label>位姿噪声 σ <b><span id="vNoise">0.0</span> m</b></label>
+        <input type="range" id="noise" min="0" max="2" step="0.1" value="0">
+        <div class="hint">叠加在远车位置上的高斯噪声</div>
+      </div>
+      <div class="metrics">
+        <div class="metric"><div class="k">估计 TTC</div><div class="v" id="mTtc">—<span class="u"> s</span></div></div>
+        <div class="metric"><div class="k">预警提前量</div><div class="v" id="mMargin">—<span class="u"> s</span></div></div>
+        <div class="metric"><div class="k">warning_flag</div><div class="v" id="mFlag">0</div></div>
+        <div class="metric"><div class="k">信息年龄 AoI</div><div class="v" id="mAoi">—<span class="u"> ms</span></div></div>
+      </div>
+      <div class="verdict safe" id="verdict">等待运行</div>
+      <div class="warnbar ok" id="deadline">链路时延 0 ms，满足 3GPP 100 ms 要求</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>退化扫描 <small>每个点 30 个固定随机种子，结果可复现</small></h2>
+    <div class="toolbar" style="margin:0 0 12px">
+      <button id="btnScan" class="primary">开始扫描</button>
+      <button id="btnCsv" disabled>导出 CSV</button>
+      <span style="color:var(--muted);font-size:12px;margin-left:6px">扫描维度</span>
+      <button class="small active" data-dim="loss">丢包率 0–90%</button>
+      <button class="small" data-dim="tau">单程时延 0–1000 ms</button>
+      <span id="scanInfo" style="color:var(--muted);font-size:12px"></span>
+    </div>
+    <canvas id="chart" width="1200" height="330"></canvas>
+    <div class="scroll" style="margin-top:12px">
+      <table id="resultTable"><thead><tr>
+        <th id="thX">丢包率 %</th><th>平均预警提前量 s</th><th>最短提前量 s</th><th>漏警率 %</th><th>来得及比例 %</th><th>平均 AoI ms</th>
+      </tr></thead><tbody><tr><td colspan="6" style="text-align:left;color:var(--muted)">尚未扫描</td></tr></tbody></table>
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 视图 ② 并排对照 ======================= -->
+<section id="view-compare" class="hidden">
+  <div class="card">
+    <h2>并排对照回放 <small>同一场景 / 同一时刻 / 同一随机种子，只改链路参数</small></h2>
+    <div class="grid2">
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--green);margin-bottom:6px">A · 理想链路（0% 丢包 / 0 ms）</div>
+        <canvas id="cmpA" width="580" height="270"></canvas>
+        <div class="verdict safe" id="cmpAVerdict" style="margin-top:8px">等待运行</div>
+      </div>
+      <div>
+        <div style="font-size:13px;font-weight:600;color:var(--red);margin-bottom:6px">B · 当前链路（右侧滑块控制）</div>
+        <canvas id="cmpB" width="580" height="270"></canvas>
+        <div class="verdict idle" id="cmpBVerdict" style="margin-top:8px">等待运行</div>
+      </div>
+    </div>
+    <div class="toolbar" style="margin:12px 0 0">
+      <button id="btnCmpEnd" class="primary">跳到关键时刻（一键出结论）</button>
+      <button id="btnCmpReplay">重新播放动画</button>
+      <span style="color:var(--muted);font-size:12px">现场没时间等 4 秒动画时，用左边按钮直接出最终对比</span>
+    </div>
+    <div class="grid4">
+      <div class="kpi"><div class="k">A 预警提前量</div><div class="v" id="kpiA">—</div></div>
+      <div class="kpi"><div class="k">B 预警提前量</div><div class="v" id="kpiB">—</div></div>
+      <div class="kpi"><div class="k">提前量损失</div><div class="v" id="kpiDelta">—</div></div>
+      <div class="kpi"><div class="k">B 信息失明占比</div><div class="v" id="kpiBlind">—</div></div>
+    </div>
+    <div class="caveat" style="margin-top:14px">
+      <b>这就是现场最好用的一下：</b>点「严重退化」预设再切回本页，左右画面同步播放，
+      左边在 t≈1.9 s 就亮预警灯，右边一路到关键时刻都不亮。老师不用听你解释指标定义，看画面就懂了。
+      借鉴的是 IROS 2025 SCORPION 的「同场景双条件对比视频」与 OpenCDA 首页并排 GIF 的叙事方式。
+    </div>
+  </div>
+</section>
+
+<!-- ======================= 视图 ③ 预警可行域 ======================= -->
+<section id="view-heat" class="hidden">
+  <div class="card">
+    <h2>预警可行域 <small id="heatSub">110 组参数 × 30 种子 = 3300 次独立运行 / 场景</small></h2>
+    <div class="toolbar" style="margin:0 0 10px">
+      <button id="btnRecalc" class="primary">按当前参数重算（30 种子）</button>
+      <button id="btnHeatCsv">导出网格 CSV</button>
+      <span style="color:var(--muted);font-size:12px;margin-left:4px">着色指标</span>
+      <button class="small active" data-hm="safe">来得及率</button>
+      <button class="small" data-hm="miss">漏警率</button>
+      <button class="small" data-hm="margin">预警提前量</button>
+      <span id="heatState" class="tag ok">内嵌数据 · 与论文 E2/E3 口径一致</span>
+    </div>
+    <canvas id="heat" width="1200" height="470"></canvas>
+    <div class="legend">
+      <span id="legLow">差</span>
+      <span class="swatch" style="background:#dc2626"></span>
+      <span class="swatch" style="background:#eab308"></span>
+      <span class="swatch" style="background:#16a34a"></span>
+      <span id="legHigh">好</span>
+      <span style="margin-left:14px">格子内数字 = 该指标数值</span>
+      <span style="margin-left:14px">点任意格子 → 把该组参数载入单次回放</span>
+    </div>
+    <div class="grid4">
+      <div class="kpi"><div class="k">3GPP 合规区仍危险的一格</div><div class="v" id="hKpi1">—</div></div>
+      <div class="kpi"><div class="k">准时但丢包 90%</div><div class="v" id="hKpi2">—</div></div>
+      <div class="kpi"><div class="k">悬崖两侧（500→600 ms）</div><div class="v" id="hKpi3">—</div></div>
+      <div class="kpi"><div class="k">可行域面积（绿色格）</div><div class="v" id="hKpi4">—</div></div>
+    </div>
+    <div class="caveat" style="margin-top:14px">
+      <b>这张图回答了单行曲线回答不了的问题：</b>3GPP 100 ms 合规线（蓝色虚线）以下并不是全绿。
+      在丢包 90% 且时延仅 100 ms 的格子里，链路指标完全合格，但来得及率只剩约 57%。
+      横向单看丢包、纵向单看时延都会漏掉这个「合规但来不及」的区域——这正是二维扫描相对一维曲线的增量。
+    </div>
+    <div class="hintline" id="heatFoot"></div>
+  </div>
+</section>
+
+<!-- ======================= 视图 ④ 信息年龄解剖 ======================= -->
+<section id="view-aoi" class="hidden">
+  <div class="card">
+    <h2>AoI 阶梯与事件时间轴 <small>借鉴 AoI 论文标准的 sawtooth 图，把「为什么会断崖」拆到逐帧</small></h2>
+    <div class="toolbar" style="margin:0 0 10px">
+      <button id="btnAoiRefresh" class="primary">按当前参数重画</button>
+      <button id="btnAoiDemo">载入退化演示参数（看红色失明带）</button>
+      <span style="color:var(--muted);font-size:12px">固定演示种子 20261105；绿色短竖线 = BSM 发出，红叉 = 丢包，蓝点 = 送达</span>
+    </div>
+    <canvas id="aoiChart" width="1200" height="380"></canvas>
+    <div class="grid4">
+      <div class="kpi"><div class="k">平均 AoI</div><div class="v" id="aKpi1">—</div></div>
+      <div class="kpi"><div class="k">信息失明帧占比</div><div class="v" id="aKpi2">—</div></div>
+      <div class="kpi"><div class="k">首次预警时刻</div><div class="v" id="aKpi3">—</div></div>
+      <div class="kpi"><div class="k">预警提前量</div><div class="v" id="aKpi4">—</div></div>
+    </div>
+    <div class="scroll" style="margin-top:14px">
+      <table id="aoiEvents"><thead><tr><th>时刻 s</th><th>事件</th><th>与预警的关系</th></tr></thead><tbody></tbody></table>
+    </div>
+    <div class="caveat" style="margin-top:12px">
+      <b>机制一句话：</b>AoI 随等待线性爬升，收到新 BSM 才骤降；一旦越过有效期（橙色虚线）就进入红色失明带，
+      主车本帧不判定。时延、丢包、降频都在把 AoI 往上推，所以三者会在同一条线上汇合成断崖。
+      把有效期滑块从 500 改成 300 再重画，橙色虚线下降、红色带提前出现——断崖位置的成因可以直接看见。
+    </div>
+  </div>
+</section>
+
+<div class="card notes">
+  <h2>指标定义、模型假设与边界</h2>
+  <h3>指标</h3>
+  <ul>
+    <li><b>预警提前量</b> = 关键时刻 − 首次预警时刻。关键时刻取理想链路下两车间距归零时刻；无预警记 0 并判漏警。</li>
+    <li><b>AoI（信息年龄）</b> = 当前时刻 − 主车手中最新的那帧 BSM 的发送时刻。它把「时延」和「丢包导致的 hold-last」统一成一个量，这是课件没展开的角度。</li>
+    <li><b>信息失明</b>：AoI 超过 BSM 有效期时，主车拒绝用过期数据判定，本帧不预警。</li>
+    <li><b>漏警</b>：到关键时刻仍未触发预警。<b>来得及</b>：非漏警且提前量 ≥ 1.5 s。<b>warning_flag</b>：0/1/2 沿用课件第 5–7 章输出形式。</li>
+  </ul>
+  <h3>模型</h3>
+  <ul>
+    <li>主车匀速、不采取制动（只评测预警是否发出，不评测控制）；远车在设定时刻开始急减速，且减速都发生在预警之前。</li>
+    <li>远车按设定频率广播 BSM；丢包独立同分布；包经单程时延到达，到达后覆盖手中最新状态；丢包即 hold-last。</li>
+    <li>主车用收到状态线性外推当前位置并计算等效 TTC：<code>gap_est / (v_HV − v_RV_est)</code>。</li>
+    <li>随机种子固定（mulberry32）；热力图与退化扫描每点 30 个独立种子，与 <code>数据/实验明细_runs.csv</code> 同源。</li>
+  </ul>
+  <h3>参数来源与展示形态来源</h3>
+  <ul>
+    <li>TTC 阈值 3.5 s / 紧急 1.75 s、安全余量 1.5 s、BSM 有效期默认 500 ms、各场景初速与减速度，均为<b>课程级简化设定</b>；写论文前须回课件第 5 / 7 章核对。</li>
+    <li>3GPP TS 22.185 的 100 ms / 20 ms 来自调研摘要，<b>条款与数值尚未逐条回标准原文核验</b>；「真实链路量级」预设的 38% / 30 ms 同理。100 ms 是链路时延要求，不等于 BSM 有效期。</li>
+    <li>展示形态参考：SCORPION（IROS 2025）同场景退化对比视频、OpenCDA / OpenCOOD 的 BEV 序列回放、IET NR-V2X 的 AoI 阶梯图、Distill / Streamlit 式交互论文、GitHub <code>Shrv03/V2X_Comm</code> 的 Canvas 消息传播演示。详见 <code>08_展示形式调研与升级方案_v0.1.md</code>，链接核实状态逐条标注。</li>
+    <li><b>ICW 仍为等效一维简化</b>：按「路口前车减速」处理，物理内核与 FCW/EBW 相同，不要拿本页数字写二维路口结论。</li>
+  </ul>
+  <div class="caveat">
+    <b>结论边界：</b>这是受控仿真，不是实车实验。未计编码压缩时延、信道拥塞、安全攻击、GNSS 定位误差与时钟同步误差；场景数量有限、主车不制动。论文里只能写「受控退化下的趋势与拐点」。
+  </div>
+</div>
+
+<div class="footer">单文件 · 无外部依赖 · 断网可用 · 原始数据与校验见项目 <code>数据/</code> 目录 · 生成脚本 <code>代码/build_prototype.js</code></div>
+<pre id="selftest"></pre>
+</div>
+
+<script id="heatmap-data" type="application/json">__HEATMAP_JSON__</script>
+<script>
+"use strict";
+const $=id=>document.getElementById(id);
+if(typeof CanvasRenderingContext2D!=="undefined"&&!CanvasRenderingContext2D.prototype.roundRect){
+  CanvasRenderingContext2D.prototype.roundRect=function(x,y,w,h,r){
+    r=Math.min(r,w/2,h/2);
+    this.moveTo(x+r,y);this.arcTo(x+w,y,x+w,y+h,r);this.arcTo(x+w,y+h,x,y+h,r);
+    this.arcTo(x,y+h,x,y,r);this.arcTo(x,y,x+w,y,r);this.closePath();return this;};
+}
+/* ============ 仿真内核：与 run_experiments.js / gen_heatmap.js 同源 ============ */
+const DT=0.05, MAXT=10, LEN=4.5, SAFE=1.5, SEEDS=30, SEED_BASE=7919, SEED_OFFSET=13;
+const SCENES={
+  fcw:{key:"fcw",name:"FCW 前向碰撞预警",lane:"straight",
+    desc:"主车 60 km/h 匀速；远车初始 40 km/h，t=1.0 s 起 −6 m/s² 减速",
+    vH:16.67,x0:55,v0:11.11,decT:1.0,a:-6.0,ttcTh:3.5,emergTh:1.75},
+  ebw:{key:"ebw",name:"EBW 紧急制动预警",lane:"brake",
+    desc:"主车 60 km/h 匀速；远车初始 50 km/h，t=2.5 s 起 −9 m/s² 急刹",
+    vH:16.67,x0:60,v0:13.89,decT:2.5,a:-9.0,ttcTh:3.5,emergTh:1.75},
+  icw:{key:"icw",name:"ICW 路口前车减速（等效一维）",lane:"cross",
+    desc:"主车 65 km/h 匀速；远车初始 40 km/h，t=2.0 s 起 −7 m/s² 在路口前减速",
+    vH:18.06,x0:55,v0:11.11,decT:2.0,a:-7.0,ttcTh:3.5,emergTh:1.75}
+};
+const PRESETS={
+  ideal:{loss:0,tau:0,freq:10,noise:0,note:"理想链路：预警提前量最大"},
+  gpp:{loss:10,tau:100,freq:10,noise:0.2,note:"3GPP V2V 上限 100 ms，链路刚好合规"},
+  real:{loss:38,tau:30,freq:10,noise:0.3,note:"按公开量级设的参考点（数值待核）"},
+  crowd:{loss:60,tau:300,freq:5,noise:0.5,note:"拥塞退化：降频 + 时延 + 丢包叠加"},
+  severe:{loss:85,tau:600,freq:2,noise:1.0,note:"严重退化：多数种子出现漏警"}
+};
+function rngFactory(seed){let a=seed>>>0;return()=>{a|=0;a=a+0x6D2B79F5|0;
+  let t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;
+  return((t^t>>>14)>>>0)/4294967296;};}
+function gauss(r){let u=0,v=0;while(u===0)u=r();while(v===0)v=r();
+  return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v);}
+function initState(sc,withTrace){return{t:0,hvX:0,rvX:sc.x0,rvV:sc.v0,
+  nextSend:0,queue:[],last:null,sent:0,lost:0,recv:0,trail:[],blind:0,frames:0,
+  warnTime:null,flag:0,ttc:Infinity,gapTrue:sc.x0-LEN,aoi:Infinity,
+  colTime:null,done:false,aoiSum:0,aoiN:0,
+  trace:withTrace?[]:null,events:withTrace?[]:null};}
+function step(s,sc,cfg,r){
+  if(s.done)return;
+  s.t+=DT;s.frames++;
+  if(s.t>=sc.decT)s.rvV=Math.max(0,s.rvV+sc.a*DT);
+  s.hvX+=sc.vH*DT;s.rvX+=s.rvV*DT;
+  s.gapTrue=s.rvX-s.hvX-LEN;
+  if(s.gapTrue<=0&&s.colTime===null)s.colTime=s.t;
+  if(s.t+1e-9>=s.nextSend){
+    s.sent++;
+    const ok=r()>=cfg.loss;
+    if(s.events)s.events.push({t:s.t,k:ok?1:0});
+    if(ok){
+      const n=cfg.noise>0?gauss(r)*cfg.noise:0;
+      s.queue.push({t:s.t,x:s.rvX+n,v:s.rvV,arriveAt:s.t+cfg.tau/1000});
+      s.trail.push(1);
+    }else{s.lost++;s.trail.push(0);}
+    if(s.trail.length>30)s.trail.shift();
+    s.nextSend+=1/cfg.freq;
+  }
+  while(s.queue.length&&s.queue[0].arriveAt<=s.t+1e-9){
+    s.last=s.queue.shift();s.recv++;
+    if(s.events)s.events.push({t:s.t,k:2});
+  }
+  let blindNow=false;
+  if(s.last){
+    s.aoi=s.t-s.last.t;s.aoiSum+=s.aoi;s.aoiN++;
+    if(s.aoi>cfg.tvalid){
+      s.blind++;blindNow=true;s.ttc=Infinity;s.flag=0;s.gapEst=NaN;
+    }else{
+      s.gapEst=(s.last.x+s.last.v*s.aoi)-s.hvX-LEN;
+      s.ttc=Math.max(0,s.gapEst/Math.max(sc.vH-s.last.v,0.5));
+      if(s.ttc<sc.ttcTh&&s.warnTime===null)s.warnTime=s.t;
+      s.flag=s.ttc<sc.emergTh?2:(s.ttc<sc.ttcTh?1:0);
+    }
+  }else{s.blind++;blindNow=true;s.ttc=Infinity;s.flag=0;}
+  if(s.trace)s.trace.push({t:s.t,aoi:isFinite(s.aoi)?s.aoi*1000:null,
+    blind:blindNow,gap:Math.max(0,s.gapTrue),flag:s.flag,warn:s.warnTime});
+  if(s.colTime!==null||s.t>=MAXT)s.done=true;
+}
+function runRaw(sc,cfg,seed,withTrace){const r=rngFactory(seed),s=initState(sc,withTrace);
+  while(!s.done)step(s,sc,cfg,r);return s;}
+function criticalTime(sc){
+  if(sc._crit)return sc._crit;
+  const s=runRaw(sc,{loss:0,tau:0,freq:10,noise:0,tvalid:0.5},1);
+  sc._crit=s.colTime===null?MAXT:s.colTime;return sc._crit;
+}
+function evaluate(s,sc){
+  const tc=criticalTime(sc);
+  const margin=s.warnTime===null?0:Math.max(0,tc-s.warnTime);
+  const missed=s.warnTime===null||margin<=0;
+  return{tc,margin,missed,safe:!missed&&margin>=SAFE,
+    aoiMean:s.aoiN?s.aoiSum/s.aoiN*1000:0,
+    blindRate:s.frames?s.blind/s.frames*100:0};
+}
+/* ============ 内嵌可行域数据 ============ */
+const HEAT=JSON.parse($("heatmap-data").textContent);
+let heatGrid=HEAT.grid,heatCustom=false,heatMetric="safe";
+let curScene=SCENES.fcw,view="replay",live=null,liveRng=null,cmpA=null,cmpB=null,
+    cmpRngA=null,cmpRngB=null,playing=true,acc=0,lastTs=0,scanData=null,scanDim="loss",
+    aoiState=null,tourTimer=null,tourStep=0;
+
+function cfg(){return{loss:+$("loss").value/100,tau:+$("tau").value,
+  freq:+$("freq").value,noise:+$("noise").value,tvalid:+$("tvalid").value/1000};}
+function idealCfg(){return{loss:0,tau:0,freq:10,noise:0,tvalid:0.5};}
+function syncLabels(){
+  $("vLoss").textContent=$("loss").value;$("vTau").textContent=$("tau").value;
+  $("vFreq").textContent=$("freq").value;$("vNoise").textContent=(+$("noise").value).toFixed(1);
+  $("vValid").textContent=$("tvalid").value;
+}
+function setView(v){
+  view=v;
+  document.querySelectorAll("[data-view]").forEach(b=>b.classList.toggle("active",b.dataset.view===v));
+  ["replay","compare","heat","aoi"].forEach(k=>$("view-"+k).classList.toggle("hidden",k!==v));
+  if(v==="compare")resetCompare();
+  if(v==="heat")drawHeat();
+  if(v==="aoi")refreshAoi();
+  if(v==="replay")render();
+}
+function clearScan(){
+  scanData=null;$("btnCsv").disabled=true;$("scanInfo").textContent="";
+  $("resultTable").querySelector("tbody").innerHTML=
+    '<tr><td colspan="6" style="text-align:left;color:var(--muted)">尚未扫描</td></tr>';
+  const c=$("chart"),g=c.getContext("2d");g.clearRect(0,0,c.width,c.height);
+}
+function reset(){
+  live=initState(curScene);liveRng=rngFactory(20261105);acc=0;playing=true;
+  $("btnPlay").textContent="暂停";
+  $("sceneDesc").textContent=curScene.desc;
+  $("sCrit").textContent=criticalTime(curScene).toFixed(2);
+  syncLabels();render();
+}
+function resetCompare(){
+  cmpA=initState(curScene);cmpB=initState(curScene);
+  cmpRngA=rngFactory(20261105);cmpRngB=rngFactory(20261105);
+  playing=true;$("btnPlay").textContent="暂停";acc=0;
+  renderCompare();
+}
+function setScene(k){
+  curScene=SCENES[k];
+  document.querySelectorAll("[data-scene]").forEach(b=>b.classList.toggle("active",b.dataset.scene===k));
+  // 现场重算只对单个场景有效，换场景必须回到统一基准，避免同页混用两种口径
+  heatGrid=HEAT.grid;heatCustom=false;
+  clearScan();reset();resetCompare();drawHeat();refreshAoi();
+}
+function applyPreset(k){
+  const p=PRESETS[k];
+  $("loss").value=p.loss;$("tau").value=p.tau;$("freq").value=p.freq;$("noise").value=p.noise;
+  $("presetNote").textContent=p.note;
+  document.querySelectorAll("[data-preset]").forEach(b=>b.classList.toggle("active",b.dataset.preset===k));
+  clearScan();reset();resetCompare();refreshAoi();
+}
+/* ============ 场景绘制（视图 ① / ② 共用） ============ */
+function drawCar(g,x,y,color,label,braking,scale){
+  scale=scale||1;g.save();g.translate(x,y);g.scale(scale,scale);
+  g.fillStyle=color;g.beginPath();g.roundRect(-27,-15,54,30,5);g.fill();
+  g.fillStyle="rgba(255,255,255,.30)";g.beginPath();g.roundRect(-8,-11,20,22,3);g.fill();
+  if(braking){g.fillStyle="#dc2626";g.fillRect(-29,-11,3,8);g.fillRect(-29,3,3,8);}
+  g.fillStyle="#fff";g.font="600 11px sans-serif";g.textAlign="center";g.fillText(label,0,4);
+  g.restore();
+}
+function drawRoad(g,W,H,s,sc,compact){
+  g.clearRect(0,0,W,H);g.fillStyle="#fbfcfe";g.fillRect(0,0,W,H);
+  const roadY=compact?140:170;
+  g.fillStyle="#eef2f7";g.fillRect(0,roadY-52,W,104);
+  g.strokeStyle="#c8d2df";g.lineWidth=2;
+  g.beginPath();g.moveTo(0,roadY-52);g.lineTo(W,roadY-52);g.moveTo(0,roadY+52);g.lineTo(W,roadY+52);g.stroke();
+  g.setLineDash([16,14]);g.strokeStyle="#d6dee9";
+  g.beginPath();g.moveTo(0,roadY);g.lineTo(W,roadY);g.stroke();g.setLineDash([]);
+  if(sc.lane==="cross"){
+    const px=compact?420:560;
+    g.fillStyle="rgba(234,88,12,.10)";g.fillRect(px-40,roadY-52,80,104);
+    g.strokeStyle="#ea580c";g.setLineDash([8,6]);g.lineWidth=2;
+    g.beginPath();g.moveTo(px-40,roadY-52);g.lineTo(px-40,roadY+52);
+    g.moveTo(px+40,roadY-52);g.lineTo(px+40,roadY+52);g.stroke();g.setLineDash([]);
+    g.fillStyle="#ea580c";g.font="12px sans-serif";g.fillText("路口停止线",px-38,roadY-62);
+  }
+  const scale=compact?4.3:6.0,hvPx=compact?56:70;
+  const rvPx=Math.min(W-60,hvPx+Math.max(0,s.gapTrue)*scale+58);
+  drawCar(g,hvPx,roadY,"#2563eb","HV",false,compact?.8:1);
+  drawCar(g,rvPx,roadY,"#ea580c","RV",s.t>=sc.decT&&s.rvV<sc.v0*0.85,compact?.8:1);
+  g.strokeStyle="#6b7787";g.lineWidth=1.5;
+  g.beginPath();g.moveTo(hvPx+54,roadY-70);g.lineTo(Math.max(hvPx+54,rvPx-54),roadY-70);g.stroke();
+  g.fillStyle="#3d4857";g.font=compact?"12px sans-serif":"13px sans-serif";g.textAlign="center";
+  g.fillText("真实间距 "+Math.max(0,s.gapTrue).toFixed(1)+" m",(hvPx+rvPx)/2,roadY-78);
+  g.textAlign="left";g.fillStyle="#6b7787";g.font="12px sans-serif";
+  g.fillText("t = "+s.t.toFixed(2)+" s · 主车 "+(sc.vH*3.6).toFixed(0)+" km/h 匀速 · 远车 "+s.rvV.toFixed(1)+" m/s"
+    +(s.t>=sc.decT?"（减速中）":""),20,compact?24:34);
+  if(!isFinite(s.ttc)){
+    g.fillStyle="#dc2626";g.font="600 12px sans-serif";
+    g.fillText("信息失明 · 无有效 BSM，本帧不判定",20,compact?44:58);
+  }
+  const f=s.flag,col=f===2?"#dc2626":(f===1?"#ea580c":"#16a34a");
+  g.fillStyle=col;g.beginPath();g.arc(W-30,compact?26:36,compact?10:13,0,7);g.fill();
+  g.fillStyle=col;g.font="600 13px sans-serif";g.textAlign="right";
+  g.fillText(f===2?"紧急预警":(f===1?"预警":"正常"),W-48,compact?30:41);g.textAlign="left";
+  // 数据包流动标记
+  g.font="11px sans-serif";g.fillStyle="#9aa5b4";
+  g.fillText("BSM 投递 "+s.recv+" / "+s.sent+" · 丢失 "+s.lost,20,H-14);
+}
+function verdictText(e){
+  if(e.margin===0&&e.missed)return{v:"miss",t:"漏警 · 预警晚于关键时刻"};
+  if(e.margin>=SAFE)return{v:"safe",t:"来得及 · 提前 "+e.margin.toFixed(2)+" s 预警"};
+  if(e.margin>0)return{v:"late",t:"来不及 · 仅提前 "+e.margin.toFixed(2)+" s"};
+  return{v:"miss",t:"漏警 · 预警晚于关键时刻"};
+}
+function drawScene(){drawRoad($("scene").getContext("2d"),760,330,live,curScene,false);}
+function render(){
+  const s=live,sc=curScene,e=evaluate(s,sc);
+  $("sTime").textContent=s.t.toFixed(2);
+  $("sPkt").textContent=s.recv+" / "+s.sent;
+  $("sLost").textContent=s.lost;
+  $("sAoi").textContent=isFinite(s.aoi)?(s.aoi*1000).toFixed(0):"—";
+  $("sBlind").textContent=e.blindRate.toFixed(0);
+  $("mTtc").innerHTML=(isFinite(s.ttc)?s.ttc.toFixed(2):"失效")+'<span class="u"> s</span>';
+  $("mMargin").innerHTML=(s.warnTime===null?"—":e.margin.toFixed(2))+'<span class="u"> s</span>';
+  const fl=$("mFlag");fl.textContent=s.flag;fl.className="v flag"+s.flag;
+  $("mAoi").innerHTML=(isFinite(s.aoi)?(s.aoi*1000).toFixed(0):"—")+'<span class="u"> ms</span>';
+  const pk=$("packets");pk.innerHTML="";
+  for(let i=0;i<30;i++){
+    const d=document.createElement("i");
+    d.className="dot"+(i<s.trail.length?(s.trail[i]?"":" lost"):" empty");pk.appendChild(d);
+  }
+  const v=$("verdict");
+  if(s.warnTime===null){
+    if(s.done){v.className="verdict miss";v.textContent="漏警 · 全程未触发预警";}
+    else{v.className="verdict safe";v.textContent="运行中 · 尚未触发预警";}
+  }else{const q=verdictText(e);v.className="verdict "+q.v;v.textContent=q.t;}
+  const tau=+$("tau").value,dl=$("deadline");
+  if(tau>100){dl.className="warnbar bad";dl.textContent="链路时延 "+tau+" ms，超出 3GPP V2V 100 ms 要求";}
+  else{dl.className="warnbar ok";dl.textContent="链路时延 "+tau+" ms，满足 3GPP 100 ms 要求（预碰撞感知建议 20 ms）";}
+  drawScene();
+}
+function renderCompare(){
+  if(!cmpA||!cmpB)return;
+  const eA=evaluate(cmpA,curScene),eB=evaluate(cmpB,curScene);
+  drawRoad($("cmpA").getContext("2d"),580,270,cmpA,curScene,true);
+  drawRoad($("cmpB").getContext("2d"),580,270,cmpB,curScene,true);
+  const cmpVerdict=(s,e)=>s.warnTime===null
+    ?(s.done?{v:"miss",t:"漏警 · 全程未触发预警"}:{v:"idle",t:"运行中 · 尚未触发预警"})
+    :verdictText(e);
+  const qa=cmpVerdict(cmpA,eA),qb=cmpVerdict(cmpB,eB);
+  const a=$("cmpAVerdict"),b=$("cmpBVerdict");
+  a.className="verdict "+qa.v;a.textContent=qa.t;
+  b.className="verdict "+qb.v;b.textContent=qb.t;
+  $("kpiA").textContent=eA.margin.toFixed(2)+" s";
+  $("kpiB").textContent=eB.margin.toFixed(2)+" s";
+  const d=eA.margin-eB.margin;
+  $("kpiDelta").textContent=(d>=0?"−":"+")+Math.abs(d).toFixed(2)+" s";
+  $("kpiDelta").style.color=d>0.3?"#dc2626":"#16a34a";
+  $("kpiBlind").textContent=eB.blindRate.toFixed(0)+" %";
+}
+function tick(ts){
+  if(!lastTs)lastTs=ts;
+  const dt=Math.min(0.1,(ts-lastTs)/1000);lastTs=ts;
+  if(playing){
+    acc+=dt*(+$("speed").value);
+    let guard=0;
+    while(acc>=DT&&guard++<40){
+      if(view==="compare"){
+        if(cmpA&&!cmpA.done)step(cmpA,curScene,idealCfg(),cmpRngA);
+        if(cmpB&&!cmpB.done)step(cmpB,curScene,cfg(),cmpRngB);
+      }else if(view==="replay"){
+        if(live&&!live.done)step(live,curScene,cfg(),liveRng);
+      }
+      acc-=DT;
+    }
+    if(view==="compare"){renderCompare();if(cmpA&&cmpA.done&&cmpB&&cmpB.done){playing=false;$("btnPlay").textContent="重新播放";}}
+    else if(view==="replay"){render();if(live&&live.done){playing=false;$("btnPlay").textContent="重新播放";}}
+  }
+  requestAnimationFrame(tick);
+}
+/* ============ 退化扫描（视图 ①） ============ */
+function xValues(){const a=[];
+  if(scanDim==="loss"){for(let v=0;v<=90;v+=10)a.push(v);}
+  else{for(let v=0;v<=1000;v+=100)a.push(v);}
+  return a;}
+function makeCfg(x){const c=cfg();if(scanDim==="loss")c.loss=x/100;else c.tau=x;return c;}
+function scan(){
+  const xs=xValues(),rows=[];
+  $("btnScan").disabled=true;$("scanInfo").textContent="扫描中…";
+  let i=0;
+  function chunk(){
+    const end=Math.min(i+2,xs.length);
+    for(;i<end;i++){
+      const x=xs[i],c=makeCfg(x);
+      let sum=0,mn=Infinity,miss=0,safe=0,aoi=0;
+      for(let k=1;k<=SEEDS;k++){
+        const s=runRaw(curScene,c,k*SEED_BASE+SEED_OFFSET),e=evaluate(s,curScene);
+        sum+=e.margin;mn=Math.min(mn,e.margin);
+        if(e.missed)miss++;if(e.safe)safe++;aoi+=e.aoiMean;
+      }
+      rows.push({x,mean:sum/SEEDS,min:mn,miss:miss/SEEDS*100,safe:safe/SEEDS*100,aoi:aoi/SEEDS});
+    }
+    if(i<xs.length){setTimeout(chunk,0);return;}
+    scanData=rows;drawChart();fillTable();
+    $("btnScan").disabled=false;$("btnCsv").disabled=false;
+    const c=cfg();
+    $("scanInfo").textContent="完成 · "+curScene.name+" · "+(scanDim==="loss"?"时延":"丢包率")+"固定在 "
+      +(scanDim==="loss"?c.tau+" ms":Math.round(c.loss*100)+" %")
+      +" · 有效期 "+Math.round(c.tvalid*1000)+" ms · "+SEEDS+" 种子/点";
+  }
+  chunk();
+}
+function fillTable(){
+  const tb=$("resultTable").querySelector("tbody");tb.innerHTML="";
+  $("thX").textContent=scanDim==="loss"?"丢包率 %":"单程时延 ms";
+  scanData.forEach(r=>{
+    const tr=document.createElement("tr");
+    [r.x,r.mean.toFixed(2),r.min.toFixed(2),r.miss.toFixed(0),r.safe.toFixed(0),r.aoi.toFixed(0)]
+      .forEach(v=>{const td=document.createElement("td");td.textContent=v;tr.appendChild(td);});
+    tb.appendChild(tr);
+  });
+}
+function drawChart(){
+  const c=$("chart"),g=c.getContext("2d"),W=c.width,H=c.height;
+  g.clearRect(0,0,W,H);g.fillStyle="#fbfcfe";g.fillRect(0,0,W,H);
+  const L=64,R=W-64,T=26,B=H-46,pw=R-L,ph=B-T,xMax=scanDim==="loss"?90:1000;
+  g.strokeStyle="#e3e8ef";g.lineWidth=1;g.font="12px sans-serif";g.fillStyle="#6b7787";
+  for(let j=0;j<=5;j++){
+    const y=T+ph*j/5;
+    g.beginPath();g.moveTo(L,y);g.lineTo(R,y);g.stroke();
+    g.textAlign="right";g.fillText((3-j*0.6).toFixed(1),L-10,y+4);
+    g.textAlign="left";g.fillText((j*20)+"%",R+10,y+4);
+  }
+  const xs=scanData.map(r=>L+pw*r.x/xMax);
+  g.textAlign="center";scanData.forEach((r,i)=>g.fillText(r.x+"",xs[i],B+20));
+  g.fillText(scanDim==="loss"?"丢包率 %":"单程时延 ms",W/2,H-8);
+  g.save();g.translate(16,H/2);g.rotate(-Math.PI/2);g.fillText("预警提前量 s",0,0);g.restore();
+  g.save();g.translate(W-14,H/2);g.rotate(Math.PI/2);g.fillText("漏警率 %",0,0);g.restore();
+  if(scanDim==="tau"){
+    const x100=L+pw*100/xMax;
+    g.setLineDash([5,4]);g.strokeStyle="#2563eb";g.lineWidth=1.5;
+    g.beginPath();g.moveTo(x100,T);g.lineTo(x100,B);g.stroke();g.setLineDash([]);
+    g.fillStyle="#2563eb";g.textAlign="left";g.fillText("3GPP 100 ms",x100+6,T+12);
+  }
+  const ySafe=T+ph*(1-SAFE/3);
+  g.setLineDash([6,5]);g.strokeStyle="#16a34a";
+  g.beginPath();g.moveTo(L,ySafe);g.lineTo(R,ySafe);g.stroke();g.setLineDash([]);
+  g.fillStyle="#16a34a";g.textAlign="left";g.fillText("安全余量 1.5 s",L+6,ySafe-6);
+  function line(color,rightAxis){
+    g.strokeStyle=color;g.lineWidth=2.5;g.beginPath();
+    scanData.forEach((r,i)=>{
+      const v=rightAxis?r.miss/100:r.mean/3;
+      const y=T+ph*(1-Math.max(0,Math.min(1,v)));
+      i?g.lineTo(xs[i],y):g.moveTo(xs[i],y);
+    });
+    g.stroke();g.fillStyle=color;
+    scanData.forEach((r,i)=>{
+      const v=rightAxis?r.miss/100:r.mean/3;
+      g.beginPath();g.arc(xs[i],T+ph*(1-Math.max(0,Math.min(1,v))),3.5,0,7);g.fill();
+    });
+  }
+  line("#2563eb",false);line("#dc2626",true);
+  g.fillStyle="#2563eb";g.fillRect(L+6,T+6,12,3);g.fillStyle="#3d4857";g.textAlign="left";
+  g.fillText("平均预警提前量（左轴）",L+24,T+10);
+  g.fillStyle="#dc2626";g.fillRect(L+230,T+6,12,3);g.fillStyle="#3d4857";
+  g.fillText("漏警率（右轴）",L+248,T+10);
+}
+function exportCsv(){
+  if(!scanData)return;
+  const c=cfg();
+  const h="scan_dim,x_value,fixed_loss_percent,fixed_tau_ms,freq_hz,noise_m,bsm_valid_ms,seed_count,mean_margin_s,min_margin_s,miss_rate_percent,safe_rate_percent,mean_aoi_ms\n";
+  const body=scanData.map(r=>[scanDim,r.x,Math.round(c.loss*100),c.tau,c.freq,c.noise,
+    Math.round(c.tvalid*1000),SEEDS,r.mean.toFixed(4),r.min.toFixed(4),
+    r.miss.toFixed(2),r.safe.toFixed(2),r.aoi.toFixed(2)].join(",")).join("\n");
+  download("\ufeff"+h+body,"退化扫描_"+curScene.key+"_"+scanDim+".csv","text/csv;charset=utf-8");
+}
+function download(content,name,type){
+  const blob=new Blob([content],{type:type||"text/plain;charset=utf-8"});
+  const a=document.createElement("a");a.href=URL.createObjectURL(blob);
+  a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(a.href),2000);
+}
+/* ============ 视图 ③ 预警可行域 ============ */
+function heatVal(cell){
+  if(heatMetric==="safe")return cell[0];
+  if(heatMetric==="miss")return cell[1];
+  return cell[2]/100;
+}
+function heatColor(v){
+  let t;
+  if(heatMetric==="margin")t=Math.max(0,Math.min(1,v/2.6));
+  else if(heatMetric==="miss")t=Math.max(0,Math.min(1,1-v/100)); // 漏警率越高越红
+  else t=Math.max(0,Math.min(1,v/100));
+  let r,g,b;
+  if(t<0.5){const u=t/0.5;r=220+14*u;g=38+141*u;b=38-30*u;}
+  else{const u=(t-0.5)/0.5;r=234-212*u;g=179-16*u;b=8+66*u;}
+  return "rgb("+(r|0)+","+(g|0)+","+(b|0)+")";
+}
+function drawHeat(){
+  const rows=heatGrid[curScene.key]||heatGrid.fcw;
+  const c=$("heat"),g=c.getContext("2d"),W=c.width,H=c.height;
+  g.clearRect(0,0,W,H);g.fillStyle="#fbfcfe";g.fillRect(0,0,W,H);
+  const L=98,R=W-150,T=44,B=H-56,pw=R-L,ph=B-T;
+  const nx=HEAT.meta.losses.length,ny=HEAT.meta.taus.length;
+  const cw=pw/nx,ch=ph/ny;
+  g.font="12px sans-serif";g.fillStyle="#6b7787";
+  g.fillText("单程时延 ms ↓",16,T-16);
+  g.fillText("丢包率 % →",L+pw/2-30,H-12);
+  for(let i=0;i<ny;i++){
+    const y=T+i*ch;
+    for(let j=0;j<nx;j++){
+      const cell=rows[i][j],v=heatVal(cell);
+      g.fillStyle=heatColor(v);g.fillRect(L+j*cw+1,y+1,cw-2,ch-2);
+      g.fillStyle="rgba(255,255,255,.95)";g.font="600 11px sans-serif";g.textAlign="center";
+      g.fillText(heatMetric==="margin"?v.toFixed(1):Math.round(v)+"",L+j*cw+cw/2,y+ch/2+4);
+    }
+    g.fillStyle="#6b7787";g.font="11.5px sans-serif";g.textAlign="right";
+    g.fillText(HEAT.meta.taus[i]+"",L-10,y+ch/2+4);
+  }
+  g.textAlign="center";g.fillStyle="#6b7787";g.font="11.5px sans-serif";
+  HEAT.meta.losses.forEach((v,j)=>g.fillText(v+"",L+j*cw+cw/2,B+18));
+  // 3GPP 合规线
+  const y100=T+ph*100/1000;
+  g.setLineDash([7,5]);g.strokeStyle="#1d4ed8";g.lineWidth=2;
+  g.beginPath();g.moveTo(L,y100);g.lineTo(R,y100);g.stroke();
+  g.fillStyle="#1d4ed8";g.textAlign="left";g.font="600 12px sans-serif";
+  g.fillText("3GPP V2V 100 ms 合规线",R+8,y100+4);
+  // 有效期死线 = tvalid + 一个发送周期
+  const tv=+$("tvalid").value,fq=+$("freq").value;
+  const cliff=tv+1000/fq;
+  if(cliff<=1000){
+    const yc=T+ph*cliff/1000;
+    g.setLineDash([4,4]);g.strokeStyle="#ea580c";g.lineWidth=2;
+    g.beginPath();g.moveTo(L,yc);g.lineTo(R,yc);g.stroke();
+    g.fillStyle="#ea580c";g.textAlign="left";g.font="600 12px sans-serif";
+    g.fillText("信息新鲜度死线 "+Math.round(cliff)+" ms",R+8,yc+4);
+  }
+  g.setLineDash([]);
+  // 图例说明
+  g.fillStyle="#475569";g.font="12px sans-serif";g.textAlign="left";
+  g.fillText(heatMetric==="safe"?"着色 = 来得及率 %（绿=好）":heatMetric==="miss"?"着色 = 漏警率 %（红=差）":"着色 = 平均预警提前量 s（绿=好）",L,T-16);
+  $("legLow").textContent=heatMetric==="miss"?"漏警多":"差";
+  $("legHigh").textContent=heatMetric==="miss"?"漏警少":"好";
+  // KPI
+  const at=(loss,tau)=>rows[HEAT.meta.taus.indexOf(tau)][HEAT.meta.losses.indexOf(loss)];
+  $("hKpi1").textContent=at(90,100)[0].toFixed(0)+" % 来得及";
+  $("hKpi1").style.color=at(90,100)[0]<70?"#dc2626":"#16a34a";
+  $("hKpi2").textContent="漏警 "+at(90,100)[1].toFixed(0)+" %";
+  $("hKpi3").textContent=at(10,500)[0].toFixed(0)+"% → "+at(10,600)[0].toFixed(0)+"%";
+  let green=0;rows.forEach(r=>r.forEach(cell=>{if(cell[0]>=80)green++;}));
+  $("hKpi4").textContent=green+" / "+(nx*ny)+" 格";
+  $("heatFoot").textContent="场景："+curScene.name+" · 每格 30 种子 · 行=时延（0–1000 ms），列=丢包率（0–90%）"
+    +(heatCustom?" · 按当前有效期/频率/噪声重算（与论文表格口径不同，仅作现场演示）":" · 内嵌数据，固定 10 Hz / 500 ms / 噪声 0.2 m，与 E2、E3 交叉点 21/21 一致");
+  $("heatState").textContent=heatCustom?"现场重算 · 演示口径":"内嵌数据 · 与论文 E2/E3 口径一致";
+  $("heatState").className="tag "+(heatCustom?"hot":"ok");
+}
+function recalcHeat(){
+  $("btnRecalc").disabled=true;$("btnRecalc").textContent="重算中…";
+  setTimeout(()=>{
+    const c=cfg(),grid={};
+    grid[curScene.key]=HEAT.meta.taus.map(tau=>HEAT.meta.losses.map(loss=>{
+      const cc={loss:loss/100,tau,freq:c.freq,noise:c.noise,tvalid:c.tvalid};
+      let m=0,miss=0,safe=0;
+      for(let k=1;k<=SEEDS;k++){
+        const s=runRaw(curScene,cc,k*SEED_BASE+SEED_OFFSET),e=evaluate(s,curScene);
+        m+=e.margin;if(e.missed)miss++;if(e.safe)safe++;
+      }
+      return[+(safe/SEEDS*100).toFixed(1),+(miss/SEEDS*100).toFixed(1),Math.round(m/SEEDS*100)];
+    }));
+    heatGrid=Object.assign({},HEAT.grid,grid);heatCustom=true;
+    drawHeat();
+    $("btnRecalc").disabled=false;$("btnRecalc").textContent="按当前参数重算（30 种子）";
+  },20);
+}
+function exportHeatCsv(){
+  const rows=heatGrid[curScene.key];
+  let out="scene,loss_pct,tau_ms,n,safe_rate_pct,miss_rate_pct,margin_mean_s\n";
+  rows.forEach((r,i)=>r.forEach((cell,j)=>{
+    out+=[curScene.key,HEAT.meta.losses[j],HEAT.meta.taus[i],SEEDS,cell[0],cell[1],(cell[2]/100).toFixed(2)].join(",")+"\n";
+  }));
+  download("\ufeff"+out,"预警可行域_"+curScene.key+(heatCustom?"_重算":"")+".csv","text/csv;charset=utf-8");
+}
+$("heat").addEventListener("click",e=>{
+  const c=$("heat"),rect=c.getBoundingClientRect();
+  const sx=c.width/rect.width,sy=c.height/rect.height;
+  const x=(e.clientX-rect.left)*sx,y=(e.clientY-rect.top)*sy;
+  const L=98,R=c.width-150,T=44,B=c.height-56;
+  if(x<L||x>R||y<T||y>B)return;
+  const j=Math.floor((x-L)/((R-L)/HEAT.meta.losses.length));
+  const i=Math.floor((y-T)/((B-T)/HEAT.meta.taus.length));
+  const loss=HEAT.meta.losses[j],tau=HEAT.meta.taus[i];
+  $("loss").value=loss;$("tau").value=tau;
+  $("presetNote").textContent="从可行域第 "+tau+" ms / "+loss+"% 格载入";
+  document.querySelectorAll("[data-preset]").forEach(b=>b.classList.remove("active"));
+  reset();resetCompare();refreshAoi();setView("replay");
+});
+/* ============ 视图 ④ AoI 阶梯图 ============ */
+function refreshAoi(){aoiState=runRaw(curScene,cfg(),20261105,true);drawAoi();fillAoiTable();}
+function drawAoi(){
+  if(!aoiState)return;
+  const s=aoiState,c=$("aoiChart"),g=c.getContext("2d"),W=c.width,H=c.height;
+  g.clearRect(0,0,W,H);g.fillStyle="#fbfcfe";g.fillRect(0,0,W,H);
+  const tc=criticalTime(curScene),tMax=Math.min(MAXT,tc+0.6);
+  // y 轴自适应：理想链路 AoI 只有 0–100 ms，若固定 1200 ms 会把锯齿压成一条直线。
+  // 下限 250 ms，并保证有效期线始终在图内；退化时随实测最大值自动放大。
+  const observed=Math.max(0,...s.trace.filter(p=>p.aoi!==null).map(p=>p.aoi));
+  const tvNow=+$("tvalid").value;
+  const aoiMax=Math.max(250,tvNow*1.12,observed*1.12);
+  const L=76,R=W-40,T=34,B=H-64,pw=R-L,ph=B-T;
+  const X=t=>L+pw*t/tMax,Y=v=>B-ph*v/aoiMax;
+  // 网格
+  g.strokeStyle="#e8edf4";g.lineWidth=1;g.font="11.5px sans-serif";g.fillStyle="#6b7787";
+  for(let j=0;j<=4;j++){
+    const v=aoiMax*j/4,y=Y(v);
+    g.beginPath();g.moveTo(L,y);g.lineTo(R,y);g.stroke();
+    g.textAlign="right";g.fillText(Math.round(v)+"",L-10,y+4);
+  }
+  for(let t=0;t<=tMax+1e-6;t+=1){
+    const x=X(t);g.beginPath();g.moveTo(x,T);g.lineTo(x,B);g.stroke();
+    g.textAlign="center";g.fillText(t+"",x,B+18);
+  }
+  g.fillText("时间 s",W/2,H-10);
+  g.save();g.translate(18,H/2);g.rotate(-Math.PI/2);g.fillText("信息年龄 AoI (ms)",0,0);g.restore();
+  // 失明区间（红带）
+  let start=null;
+  const bands=[];
+  s.trace.forEach(p=>{
+    if(p.blind&&start===null)start=p.t;
+    if(!p.blind&&start!==null){bands.push([start,p.t]);start=null;}
+  });
+  if(start!==null)bands.push([start,s.trace[s.trace.length-1].t]);
+  bands.forEach(([a,b])=>{g.fillStyle="rgba(220,38,38,.12)";g.fillRect(X(a),T,Math.max(1,X(b)-X(a)),ph);});
+  // 事件标记（底部）
+  s.events.forEach(ev=>{
+    const x=X(ev.t);if(x>L&&x<R){
+      if(ev.k===1){g.strokeStyle="rgba(22,163,74,.55)";g.lineWidth=1.5;
+        g.beginPath();g.moveTo(x,B-26);g.lineTo(x,B-14);g.stroke();}
+      else if(ev.k===0){g.strokeStyle="#dc2626";g.lineWidth=1.5;
+        g.beginPath();g.moveTo(x-3,B-23);g.lineTo(x+3,B-17);g.moveTo(x+3,B-23);g.lineTo(x-3,B-17);g.stroke();}
+      else{g.fillStyle="rgba(37,99,235,.65)";g.beginPath();g.arc(x,B-9,2.6,0,7);g.fill();}
+    }
+  });
+  // 有效期线
+  const tv=+$("tvalid").value;
+  g.setLineDash([7,5]);g.strokeStyle="#ea580c";g.lineWidth=2;
+  g.beginPath();g.moveTo(L,Y(tv));g.lineTo(R,Y(tv));g.stroke();g.setLineDash([]);
+  g.fillStyle="#ea580c";g.textAlign="left";g.font="600 12px sans-serif";
+  g.fillText("BSM 有效期 "+tv+" ms",L+8,Y(tv)-7);
+  // AoI 折线
+  g.strokeStyle="#2563eb";g.lineWidth=2.2;g.beginPath();
+  let started=false;
+  s.trace.forEach(p=>{
+    if(p.aoi===null)return;
+    const x=X(p.t),y=Y(Math.min(p.aoi,aoiMax));
+    started?g.lineTo(x,y):g.moveTo(x,y);started=true;
+  });
+  g.stroke();
+  // 关键时刻 / 预警时刻
+  const mark=(t,color,label,dy)=>{
+    if(t===null||t>tMax)return;
+    const x=X(t);g.setLineDash([5,4]);g.strokeStyle=color;g.lineWidth=2;
+    g.beginPath();g.moveTo(x,T);g.lineTo(x,B);g.stroke();g.setLineDash([]);
+    g.fillStyle=color;g.textAlign="left";g.font="600 12px sans-serif";
+    g.fillText(label,x+6,T+dy);
+  };
+  mark(tc,"#dc2626","关键时刻 tc="+tc.toFixed(2)+"s",14);
+  mark(s.warnTime,"#16a34a","首次预警 "+(s.warnTime===null?"—":s.warnTime.toFixed(2)+"s"),34);
+  mark(curScene.decT,"#6b7787","远车开始减速",54);
+  // KPI
+  const e=evaluate(s,curScene);
+  $("aKpi1").textContent=e.aoiMean.toFixed(0)+" ms";
+  $("aKpi2").textContent=e.blindRate.toFixed(0)+" %";
+  $("aKpi2").style.color=e.blindRate>50?"#dc2626":"#16a34a";
+  $("aKpi3").textContent=s.warnTime===null?"未预警":s.warnTime.toFixed(2)+" s";
+  $("aKpi4").textContent=e.margin.toFixed(2)+" s";
+}
+function fillAoiTable(){
+  const s=aoiState,e=evaluate(s,curScene),tc=criticalTime(curScene);
+  const rows=[
+    ["0.00","仿真开始，主车匀速接近远车","—"],
+    [curScene.decT.toFixed(2),"远车开始急减速 "+curScene.a+" m/s²","危险开始积累，BSM 里的速度开始失真"],
+    [s.warnTime===null?"—":s.warnTime.toFixed(2),s.warnTime===null?"全程未触发预警":"首次触发预警（warning_flag=1）","提前量 "+(tc-(s.warnTime||tc)).toFixed(2)+" s"],
+    [tc.toFixed(2),"关键时刻：理想链路下两车间距归零","预警必须发生在此时刻之前"],
+    ["—",s.events.filter(x=>x.k===1).length+" 帧 BSM 发出 / "+s.events.filter(x=>x.k===2).length+" 帧送达 / "+s.lost+" 帧丢弃","AoI 平均值 "+e.aoiMean.toFixed(0)+" ms，失明 "+e.blindRate.toFixed(0)+"%"]
+  ];
+  const tb=$("aoiEvents").querySelector("tbody");tb.innerHTML="";
+  rows.forEach(r=>{const tr=document.createElement("tr");
+    r.forEach(v=>{const td=document.createElement("td");td.textContent=v;td.style.textAlign="left";tr.appendChild(td);});
+    tb.appendChild(tr);});
+}
+/* ============ 现场导览 / 导出 PNG / 分享链接 ============ */
+const TOUR=[
+  {view:"compare",preset:"severe",text:"① 同一场景、同一时刻、同一随机种子，只改链路参数：左边理想链路提前约 2.4 s 预警，右边严重退化一路不亮灯。"},
+  {view:"heat",text:"② 把 110 组参数各跑 30 个种子，画出预警可行域：绿色=来得及，红色=漏警。注意 3GPP 100 ms 合规线以下仍有危险格。"},
+  {view:"aoi",text:"③ 为什么会有断崖？AoI 越过 BSM 有效期就进入红色失明带，主车本帧拒绝判定。拖有效期滑块，橙色虚线会带着断崖一起移动。"},
+  {view:"replay",preset:"ideal",text:"④ 回到单次回放：任意滑块都能重播，扫描可导出 CSV，四个视图可导出 PNG 直接贴进 PPT。演示结束。"}
+];
+function startTour(){
+  stopTour();tourStep=0;$("tourBar").classList.remove("hidden");
+  $("btnTour").textContent="导览进行中…";
+  tourTick();
+}
+function tourTick(){
+  if(tourStep>=TOUR.length){stopTour();return;}
+  const t=TOUR[tourStep];
+  $("tourText").innerHTML="<b>第 "+(tourStep+1)+" / "+TOUR.length+" 步</b>　"+t.text;
+  if(t.preset)applyPreset(t.preset);
+  setView(t.view);
+  tourStep++;
+  tourTimer=setTimeout(tourTick,7000);
+}
+function stopTour(){
+  if(tourTimer)clearTimeout(tourTimer);tourTimer=null;tourStep=0;
+  $("tourBar").classList.add("hidden");$("btnTour").textContent="▶ 一键现场导览（4 步）";
+}
+function exportPng(){
+  const map={replay:["scene","单次回放"],compare:["cmpA","cmpB"],heat:["heat","预警可行域"],aoi:["aoiChart","AoI 阶梯图"]}[view];
+  const ids=map.slice(0,view==="compare"?2:1),name=map[map.length-1];
+  const tmp=document.createElement("canvas"),W=Math.max(...ids.map(id=>$(id).width))+40;
+  const H=ids.reduce((a,id)=>a+$(id).height,0)+70+20*(ids.length-1);
+  tmp.width=W;tmp.height=H;
+  const g=tmp.getContext("2d");g.fillStyle="#ffffff";g.fillRect(0,0,W,H);
+  g.fillStyle="#1b2430";g.font="600 17px sans-serif";
+  g.fillText("V2X 预警死线 · "+name+" · "+curScene.name,20,32);
+  g.fillStyle="#6b7787";g.font="12px sans-serif";
+  const c=cfg();
+  g.fillText("丢包 "+Math.round(c.loss*100)+"% / 时延 "+c.tau+" ms / "+c.freq+" Hz / 有效期 "+(c.tvalid*1000)+" ms / 噪声 "+c.noise+" m",20,52);
+  let y=66;
+  ids.forEach(id=>{g.drawImage($(id),20,y);y+=$(id).height+20;});
+  const a=document.createElement("a");
+  a.href=tmp.toDataURL("image/png");a.download="展示图_"+name+"_"+curScene.key+".png";a.click();
+}
+function hashOf(){
+  const c=cfg();
+  return "#scene="+curScene.key+"&view="+view+"&loss="+Math.round(c.loss*100)+"&tau="+c.tau+
+    "&freq="+c.freq+"&tvalid="+Math.round(c.tvalid*1000)+"&noise="+c.noise;
+}
+function jumpToEnd(){
+  if(view!=="compare")return;
+  if(!cmpA||!cmpB)resetCompare();
+  let guard=0;
+  while(!cmpA.done&&guard++<1000)step(cmpA,curScene,idealCfg(),cmpRngA);
+  guard=0;
+  while(!cmpB.done&&guard++<1000)step(cmpB,curScene,cfg(),cmpRngB);
+  playing=false;$("btnPlay").textContent="重新播放";renderCompare();
+}
+function loadAoiDemo(){
+  $("loss").value=30;$("tau").value=400;$("freq").value=5;
+  $("tvalid").value=500;$("noise").value=0.2;
+  $("presetNote").textContent="AoI 教学参数：30% 丢包 / 400 ms / 5 Hz（红色失明带会出现）";
+  document.querySelectorAll("[data-preset]").forEach(b=>b.classList.remove("active"));
+  clearScan();reset();resetCompare();refreshAoi();
+}
+function parseHash(){
+  const h=location.hash.replace(/^#/,"");if(!h)return {};
+  const p={};h.split("&").forEach(kv=>{const [k,v]=kv.split("=");p[k]=v;});
+  if(p.scene&&SCENES[p.scene])curScene=SCENES[p.scene];
+  ["loss","tau","freq","tvalid","noise"].forEach(k=>{if(p[k]!==undefined&&$(k))$(k).value=p[k];});
+  document.querySelectorAll("[data-scene]").forEach(b=>b.classList.toggle("active",b.dataset.scene===curScene.key));
+  if(p.view)view=p.view;
+  return p;
+}
+/* ============ 事件绑定 ============ */
+document.querySelectorAll("[data-scene]").forEach(b=>b.onclick=()=>setScene(b.dataset.scene));
+document.querySelectorAll("[data-preset]").forEach(b=>b.onclick=()=>applyPreset(b.dataset.preset));
+document.querySelectorAll("[data-view]").forEach(b=>b.onclick=()=>{stopTour();setView(b.dataset.view);});
+document.querySelectorAll("[data-dim]").forEach(b=>b.onclick=()=>{
+  scanDim=b.dataset.dim;
+  document.querySelectorAll("[data-dim]").forEach(x=>x.classList.toggle("active",x.dataset.dim===scanDim));
+  clearScan();
+});
+document.querySelectorAll("[data-hm]").forEach(b=>b.onclick=()=>{
+  heatMetric=b.dataset.hm;
+  document.querySelectorAll("[data-hm]").forEach(x=>x.classList.toggle("active",x.dataset.hm===heatMetric));
+  drawHeat();
+});
+["loss","tau","freq","tvalid","noise"].forEach(id=>{
+  $(id).oninput=()=>{
+    $("presetNote").textContent="自定义参数";
+    document.querySelectorAll("[data-preset]").forEach(b=>b.classList.remove("active"));
+    clearScan();reset();resetCompare();refreshAoi();
+  };
+});
+$("btnPlay").onclick=()=>{
+  const target=view==="compare"?cmpA:live;
+  if(target&&target.done){view==="compare"?resetCompare():reset();return;}
+  playing=!playing;$("btnPlay").textContent=playing?"暂停":"继续";
+};
+$("btnStep").onclick=()=>{
+  playing=false;$("btnPlay").textContent="继续";
+  if(view==="compare"){
+    if(cmpA&&!cmpA.done)step(cmpA,curScene,idealCfg(),cmpRngA);
+    if(cmpB&&!cmpB.done)step(cmpB,curScene,cfg(),cmpRngB);
+    renderCompare();
+  }else{if(live&&!live.done)step(live,curScene,cfg(),liveRng);render();}
+};
+$("btnReset").onclick=()=>{view==="compare"?resetCompare():reset();};
+$("btnScan").onclick=scan;
+$("btnCsv").onclick=exportCsv;
+$("btnRecalc").onclick=recalcHeat;
+$("btnHeatCsv").onclick=exportHeatCsv;
+$("btnAoiRefresh").onclick=refreshAoi;
+$("btnAoiDemo").onclick=loadAoiDemo;
+$("btnCmpEnd").onclick=jumpToEnd;
+$("btnCmpReplay").onclick=resetCompare;
+$("btnTour").onclick=startTour;
+$("btnTourStop").onclick=stopTour;
+$("btnPng").onclick=exportPng;
+$("btnShare").onclick=()=>{
+  location.hash=hashOf();
+  const box=$("shareBox");box.classList.remove("hidden");
+  $("shareUrl").value=location.href;$("shareUrl").select();
+};
+$("btnCopy").onclick=()=>{
+  $("shareUrl").select();
+  try{document.execCommand("copy");$("btnCopy").textContent="已复制";setTimeout(()=>$("btnCopy").textContent="复制",1500);}catch(e){}
+};
+/* ============ 自检（供无头浏览器 dump-dom 读取） ============ */
+function selfTest(){
+  const out={ok:true,checks:[]};
+  const ck=(name,cond,detail)=>{out.checks.push({name,pass:!!cond,detail});if(!cond)out.ok=false;};
+  ck("内核关键时刻 FCW",Math.abs(criticalTime(SCENES.fcw)-4.30)<0.01,criticalTime(SCENES.fcw).toFixed(2));
+  ck("内核关键时刻 EBW",Math.abs(criticalTime(SCENES.ebw)-6.05)<0.01,criticalTime(SCENES.ebw).toFixed(2));
+  ck("内核关键时刻 ICW",Math.abs(criticalTime(SCENES.icw)-4.50)<0.01,criticalTime(SCENES.icw).toFixed(2));
+  const rows=HEAT.grid.fcw;
+  ck("热力图理想格 100% 来得及",rows[0][0][0]===100,rows[0][0][0]);
+  ck("热力图断崖 600ms 全漏警",rows[6][1][1]===100,rows[6][1][1]);
+  ck("热力图合规区仍有危险",rows[1][9][0]<70,rows[1][9][0]);
+  const tr=runRaw(curScene,cfg(),20261105,true);
+  ck("AoI 轨迹非空",tr.trace.length>50,tr.trace.length);
+  ck("AoI 事件非空",tr.events.length>20,tr.events.length);
+  try{drawHeat();drawAoi();renderCompare();drawScene();ck("四视图渲染无异常",true,"ok");}
+  catch(e){ck("四视图渲染无异常",false,String(e));}
+  $("selftest").textContent=JSON.stringify(out);
+  return out;
+}
+/* ============ 初始化 ============ */
+const initialParams=parseHash();
+reset();resetCompare();refreshAoi();drawHeat();
+setView(["replay","compare","heat","aoi"].includes(view)?view:"replay");
+if(initialParams.end==="1"&&view==="compare")jumpToEnd();
+selfTest();
+requestAnimationFrame(tick);
+</script>
+</body>
+</html>

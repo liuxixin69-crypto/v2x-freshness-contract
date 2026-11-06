@@ -1,0 +1,11 @@
+# Python 依赖（Node.js 侧脚本为零依赖，仅需 node >= 18）
+# 版本号为本文实际验证通过的组合；>= 下限亦应可用，但未经逐一测试。
+
+numpy>=2.0,<3           # 2.5.4 tested
+matplotlib>=3.8,<4      # 3.11.2 tested  —— Fig.1-5
+python-docx>=1.1,<2     # 1.2.0 tested   —— 投稿稿 + 投稿信
+Pillow>=10,<14          # 13.0.0 tested  —— docx 图片嵌入
+
+# 仅用于 PDF 导出与版面自检（可选；Windows + Word 环境）
+# pymupdf>=1.24
+# pywin32>=306

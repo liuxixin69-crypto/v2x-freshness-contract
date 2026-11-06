@@ -1,0 +1,38 @@
+{
+  "metadata": {
+    "title": "How Stale Is Too Stale? Bounding Consecutive Information Outages in V2X Collision Warning — Reproduction Package",
+    "upload_type": "software",
+    "publication_date": "2026-11-06",
+    "creators": [
+      {
+        "name": "Liu, Nian",
+        "affiliation": "International School, Beijing University of Posts and Telecommunications"
+      }
+    ],
+    "description": "Simulation kernel, per-seed CSV outputs, figure-generation scripts, and one-command reproducibility package (reproduce.sh) for the IEEE Access submission on an information-freshness contract for V2X collision warnings. ~16,200 controlled simulation runs; V* sensitivity table; Gilbert-Elliot burst validation of the C2 blind-run-tail contract.",
+    "access_right": "open",
+    "license": "CC-BY-4.0",
+    "keywords": [
+      "V2X",
+      "C-V2X",
+      "age of information",
+      "collision warning",
+      "burst loss",
+      "safety contract",
+      "reproducible simulation"
+    ],
+    "related_identifiers": [
+      {
+        "identifier": "[TBD] 10.1109/ACCESS.XXXXXXX (IEEE Access DOI, fill after acceptance)",
+        "relation": "isSupplementTo",
+        "resource_type": "publication-article"
+      },
+      {
+        "identifier": "https://github.com/<owner>/v2x-freshness-contract (fill <owner> after repo creation)",
+        "relation": "isSupplementTo",
+        "resource_type": "software"
+      }
+    ],
+    "notes": "Manuscript version v2.0. Creator name and affiliation are filled. Still to add before deposit: ORCID (if available), the concrete GitHub <owner>, and the journal DOI once the manuscript is accepted. The upload_type 'software' is appropriate for a code+data reproduction package; switch to 'dataset' if only data are archived."
+  }
+}

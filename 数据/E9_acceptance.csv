@@ -1,0 +1,9 @@
+﻿scene,V_mode,n,n_qualified,contract_FA,contract_FR,contract_FAr_pct,contract_FRr_pct,baseline_FA,baseline_FR,baseline_FAr_pct,baseline_FRr_pct
+fcw,500,121,50,1,11,1.4,22.0,0,46,0.0,92.0
+fcw,vstar,121,50,2,4,2.8,8.0,0,46,0.0,92.0
+ebw,500,121,54,0,14,0.0,25.9,0,50,0.0,92.6
+ebw,vstar,121,45,0,5,0.0,11.1,0,41,0.0,91.1
+icw,500,121,42,4,6,5.1,14.3,0,38,0.0,90.5
+icw,vstar,121,42,4,6,5.1,14.3,0,38,0.0,90.5
+ALL,500,363,146,5,31,2.3,21.2,0,134,0.0,91.8
+ALL,vstar,363,137,6,15,2.7,10.9,0,125,0.0,91.2

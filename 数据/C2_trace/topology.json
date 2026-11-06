@@ -1,0 +1,306 @@
+{
+  "files": {
+    "C-V2I-2025-09-15-ts1-rx-obu2-0": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 3949,
+      "t0": 1757947673.837773,
+      "t1": 1757947977.721574,
+      "nh": 3949,
+      "srcs": {
+        "000000000000": 3949
+      }
+    },
+    "C-V2I-2025-09-15-ts1-rx-obu2-1": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 2710,
+      "t0": 1757947982.409795,
+      "t1": 1757948285.294556,
+      "nh": 2710,
+      "srcs": {
+        "000000000000": 2710
+      }
+    },
+    "C-V2I-2025-09-15-ts1-rx-obu2-2": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 1649,
+      "t0": 1757948289.817835,
+      "t1": 1757948593.604582,
+      "nh": 1649,
+      "srcs": {
+        "000000000000": 1649
+      }
+    },
+    "C-V2I-2025-09-15-ts1-rx-rsu1": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 6806,
+      "t0": 1757947457.430855,
+      "t1": 1757948368.765565,
+      "nh": 6806,
+      "srcs": {
+        "000000000000": 6806
+      }
+    },
+    "C-V2I-2025-09-15-ts1-tx-obu2-0": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 3028,
+      "t0": 1757947674.203112,
+      "t1": 1757947977.483628,
+      "nh": 3028,
+      "srcs": {
+        "e21116c74e1a": 3028
+      }
+    },
+    "C-V2I-2025-09-15-ts1-tx-obu2-1": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 3014,
+      "t0": 1757947983.203179,
+      "t1": 1757948285.069941,
+      "nh": 3014,
+      "srcs": {
+        "9666181bd72b": 3014
+      }
+    },
+    "C-V2I-2025-09-15-ts1-tx-obu2-2": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 3028,
+      "t0": 1757948290.204379,
+      "t1": 1757948593.474124,
+      "nh": 3028,
+      "srcs": {
+        "9edda76e4ef4": 3028
+      }
+    },
+    "C-V2I-2025-09-15-ts1-tx-rsu1": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 13646,
+      "t0": 1757947458.106806,
+      "t1": 1757948368.409966,
+      "nh": 13646,
+      "srcs": {
+        "8eb60548f93b": 13646
+      }
+    },
+    "C-V2I-2025-09-15-ts1-tx-rx-rsu4": {
+      "zip": "C-V2I-outdoor-testcase1-datasets-PCAP.zip",
+      "n": 0,
+      "t0": null,
+      "t1": null,
+      "nh": 0,
+      "srcs": {}
+    },
+    "C-V2I-2025-09-15-ts2-rx-rsu1": {
+      "zip": "C-V2I-outdoor-testcase2-datasets-PCAP.zip",
+      "n": 5312,
+      "t0": 1757949527.426195,
+      "t1": 1757950138.756597,
+      "nh": 5312,
+      "srcs": {
+        "000000000000": 5312
+      }
+    },
+    "C-V2I-2025-09-15-ts2-tx-rsu1": {
+      "zip": "C-V2I-outdoor-testcase2-datasets-PCAP.zip",
+      "n": 9151,
+      "t0": 1757949528.140463,
+      "t1": 1757950138.544067,
+      "nh": 9151,
+      "srcs": {
+        "8eb60548f93b": 9151
+      }
+    },
+    "C-V2I-2025-09-15-ts2-tx-rx-obu4": {
+      "zip": "C-V2I-outdoor-testcase2-datasets-PCAP.zip",
+      "n": 0,
+      "t0": null,
+      "t1": null,
+      "nh": 0,
+      "srcs": {}
+    },
+    "C-V2I-2025-09-15-ts2-tx-rx-rsu4": {
+      "zip": "C-V2I-outdoor-testcase2-datasets-PCAP.zip",
+      "n": 0,
+      "t0": null,
+      "t1": null,
+      "nh": 0,
+      "srcs": {}
+    },
+    "C-V2X-2025-09-15-ts3-rx-obu1": {
+      "zip": "C-V2X-outdoor-testcase3-datasets-PCAP.zip",
+      "n": 12383,
+      "t0": 1757952193.897764,
+      "t1": 1757952797.939511,
+      "nh": 12383,
+      "srcs": {
+        "000000000000": 12383
+      }
+    },
+    "C-V2X-2025-09-15-ts3-rx-rsu1": {
+      "zip": "C-V2X-outdoor-testcase3-datasets-PCAP.zip",
+      "n": 9602,
+      "t0": 1757952176.504801,
+      "t1": 1757952787.89564,
+      "nh": 9602,
+      "srcs": {
+        "000000000000": 9602
+      }
+    },
+    "C-V2X-2025-09-15-ts3-tx-obu1": {
+      "zip": "C-V2X-outdoor-testcase3-datasets-PCAP.zip",
+      "n": 6022,
+      "t0": 1757952194.249931,
+      "t1": 1757952797.510221,
+      "nh": 6022,
+      "srcs": {
+        "46c5c2e13cb3": 6022
+      }
+    },
+    "C-V2X-2025-09-15-ts3-tx-rsu1": {
+      "zip": "C-V2X-outdoor-testcase3-datasets-PCAP.zip",
+      "n": 9151,
+      "t0": 1757952177.179157,
+      "t1": 1757952787.581275,
+      "nh": 9151,
+      "srcs": {
+        "8eb60548f93b": 9151
+      }
+    },
+    "C-V2X-2025-09-15-ts3-tx-rx-obu4": {
+      "zip": "C-V2X-outdoor-testcase3-datasets-PCAP.zip",
+      "n": 0,
+      "t0": null,
+      "t1": null,
+      "nh": 0,
+      "srcs": {}
+    },
+    "C-V2X-2025-09-15-ts3-tx-rx-rsu4": {
+      "zip": "C-V2X-outdoor-testcase3-datasets-PCAP.zip",
+      "n": 0,
+      "t0": null,
+      "t1": null,
+      "nh": 0,
+      "srcs": {}
+    }
+  },
+  "links": [
+    [
+      "C-V2I-2025-09-15-ts1-rx-obu2-0",
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      501
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-obu2-0",
+      "C-V2I-2025-09-15-ts1-tx-rsu1",
+      3448
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-obu2-1",
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      426
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-obu2-1",
+      "C-V2I-2025-09-15-ts1-tx-rsu1",
+      2284
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-obu2-2",
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      158
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-obu2-2",
+      "C-V2I-2025-09-15-ts1-tx-rsu1",
+      1107
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      "C-V2I-2025-09-15-ts1-rx-obu2-0",
+      501
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      "C-V2I-2025-09-15-ts1-rx-obu2-1",
+      426
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      "C-V2I-2025-09-15-ts1-rx-obu2-2",
+      158
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      "C-V2I-2025-09-15-ts1-tx-obu2-0",
+      2399
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      "C-V2I-2025-09-15-ts1-tx-obu2-1",
+      1679
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      "C-V2I-2025-09-15-ts1-tx-obu2-2",
+      783
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-tx-obu2-0",
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      2399
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-tx-obu2-1",
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      1679
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-tx-obu2-2",
+      "C-V2I-2025-09-15-ts1-rx-rsu1",
+      783
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-tx-rsu1",
+      "C-V2I-2025-09-15-ts1-rx-obu2-0",
+      3448
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-tx-rsu1",
+      "C-V2I-2025-09-15-ts1-rx-obu2-1",
+      2284
+    ],
+    [
+      "C-V2I-2025-09-15-ts1-tx-rsu1",
+      "C-V2I-2025-09-15-ts1-rx-obu2-2",
+      1107
+    ],
+    [
+      "C-V2X-2025-09-15-ts3-rx-obu1",
+      "C-V2X-2025-09-15-ts3-rx-rsu1",
+      4786
+    ],
+    [
+      "C-V2X-2025-09-15-ts3-rx-obu1",
+      "C-V2X-2025-09-15-ts3-tx-rsu1",
+      5698
+    ],
+    [
+      "C-V2X-2025-09-15-ts3-rx-rsu1",
+      "C-V2X-2025-09-15-ts3-rx-obu1",
+      4786
+    ],
+    [
+      "C-V2X-2025-09-15-ts3-rx-rsu1",
+      "C-V2X-2025-09-15-ts3-tx-obu1",
+      4075
+    ],
+    [
+      "C-V2X-2025-09-15-ts3-tx-obu1",
+      "C-V2X-2025-09-15-ts3-rx-rsu1",
+      4075
+    ],
+    [
+      "C-V2X-2025-09-15-ts3-tx-rsu1",
+      "C-V2X-2025-09-15-ts3-rx-obu1",
+      5698
+    ]
+  ]
+}

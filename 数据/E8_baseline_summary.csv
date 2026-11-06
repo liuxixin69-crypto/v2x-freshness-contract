@@ -1,0 +1,16 @@
+﻿criterion,scope,n_cells,n_qualified,n_unsafe,n_accepted,FA,FR,false_accept_rate_pct,false_reject_rate_pct,total_misjudgment_rate_pct,precision_pct
+baseline,ALL,330,146,184,12,0,134,0.0,91.8,40.6,100.0
+baseline,EXCL_TAU500,300,124,176,12,0,112,0.0,90.3,37.3,100.0
+baseline,fcw,110,50,60,4,0,46,0.0,92.0,41.8,100.0
+baseline,ebw,110,54,56,4,0,50,0.0,92.6,45.5,100.0
+baseline,icw,110,42,68,4,0,38,0.0,90.5,34.5,100.0
+baseline_realizedPDR,ALL,330,146,184,10,0,136,0.0,93.2,41.2,100.0
+baseline_realizedPDR,EXCL_TAU500,300,124,176,10,0,114,0.0,91.9,38.0,100.0
+baseline_realizedPDR,fcw,110,50,60,4,0,46,0.0,92.0,41.8,100.0
+baseline_realizedPDR,ebw,110,54,56,2,0,52,0.0,96.3,47.3,100.0
+baseline_realizedPDR,icw,110,42,68,4,0,38,0.0,90.5,34.5,100.0
+contract,ALL,330,146,184,120,5,31,2.7,21.2,10.9,95.8
+contract,EXCL_TAU500,300,124,176,120,5,9,2.8,7.3,4.7,95.8
+contract,fcw,110,50,60,40,1,11,1.7,22.0,10.9,97.5
+contract,ebw,110,54,56,40,0,14,0.0,25.9,12.7,100.0
+contract,icw,110,42,68,40,4,6,5.9,14.3,9.1,90.0
