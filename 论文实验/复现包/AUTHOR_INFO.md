@@ -20,8 +20,9 @@ reproduction package (`CITATION.cff`, `zenodo.json`).
   name retained only in early drafts and is no longer used anywhere in v2.0.
 - ORCID registered **2026-11-06**; the confirmation screenshot is archived as
   `orcid-proof.png` in this folder.
-- GitHub repository is to be created as a public empty repo, then pushed from
-  the local git repository (remote `origin` already set).
+- GitHub repository **published** as a public repo and pushed from the local
+  git repository (remote `origin` set; default branch `main`). All commit
+  authors/committers rewritten to the legal name Xixin Liu on 2026-11-06.
 - Zenodo DOI is still pending: upload this reproduction package to Zenodo after
   acceptance, then back-fill the DOI into `zenodo.json` (line ~26) and the
   Data Availability statement.
