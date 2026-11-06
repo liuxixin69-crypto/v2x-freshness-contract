@@ -10,7 +10,7 @@ abstract: >-
 type: software
 authors:
   - family-names: "Liu"
-    given-names: "Nian"
+    given-names: "Xixin"
     affiliation: "International School, Beijing University of Posts and Telecommunications, Beijing 100876, China"
     email: "2138385347@bupt.edu.cn"
 version: "2.0"

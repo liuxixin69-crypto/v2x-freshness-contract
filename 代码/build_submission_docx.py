@@ -33,7 +33,7 @@ CHK  = os.path.join(BASE, r"论文实验/投稿前待办清单_%s.md" % VERSION)
 # Change these values here; never hand-edit the generated .docx.
 # ----------------------------------------------------------------------------
 AUTHOR_META = {
-    "name":         "Nian Liu",              # 刘念 (surname Liu)
+    "name":         "Xixin Liu",             # 刘喜鑫 (surname Liu; Nian Liu was a pen name)
     "affiliation":  "International School, Beijing University of Posts and Telecommunications",
     "affiliation_full": "International School, Beijing University of Posts and Telecommunications, "
                         "Beijing 100876, China",
@@ -792,9 +792,9 @@ for t, b in [
     ("Author Contributions",
      "Conceptualization, methodology, software, validation, formal analysis, investigation, data "
      "curation, writing\u2014original draft, writing\u2014review and editing, visualization: "
-     "Nian Liu. The author has read and agreed to the published version of the manuscript."),
+     "Xixin Liu. The author has read and agreed to the published version of the manuscript."),
     ("Author Biographies",
-     "Nian Liu is currently an undergraduate student at the International School, Beijing "
+     "Xixin Liu is currently an undergraduate student at the International School, Beijing "
      "University of Posts and Telecommunications, Beijing, China. Research interests include V2X "
      "communications, cooperative intelligent transportation systems, and information freshness "
      "(age of information) in vehicular networks. (An author photograph will be supplied with the "
@@ -892,7 +892,7 @@ p0 = [
 ]
 for k, item in enumerate(p0, 1):
     checklist.append(f"{k}. {item}\n")
-checklist.append("\n作者信息（已完成）：Nian Liu†（一作兼通讯），International School, Beijing University of Posts and Telecommunications；邮箱 2138385347@bupt.edu.cn。标题页 / 投稿信 / 作者贡献 / 作者简介 / CITATION.cff 已同步；ORCID 待补（需你提供 ORCID iD）。\n")
+checklist.append("\n作者信息（已完成）：Xixin Liu†（一作兼通讯，真名刘喜鑫，Nian Liu 为笔名），International School, Beijing University of Posts and Telecommunications；邮箱 2138385347@bupt.edu.cn。标题页 / 投稿信 / 作者贡献 / 作者简介 / CITATION.cff 已同步；ORCID 待补（需你提供 ORCID iD）。\n")
 checklist.append("\n方案B 优化（已补，见正文 Fig.1–5 与 §3.3/§6.7/§6.8）：V* 敏感性表 + E2/E3 用 V* 重跑（E9，契约 FR 21.2%->10.9%）；C2 在 GE 突发下实证并推导 L_B 阈值（L_B≲7 包≈0.6–0.7s@10Hz）；真实 trace 复核（E11）+ 可用度预算（E12）；五张 IEEE 分辨率配图；一键复现包（论文实验/复现包/）。\n")
 checklist.append("\n原稿中标记的 [TBD] 清单（已在此版移除，仅作追踪）：\n")
 seen = []
