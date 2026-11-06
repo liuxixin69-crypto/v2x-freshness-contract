@@ -885,14 +885,14 @@ checklist.append("- 删除 DRAFT NOTES 作者备注块；\n"
                  "  反解 A*=(1−δ)/(1−q_c)：δ=5% 时须 95.9%（每小时允许中断 2.5 min），最差链路 98.4%。\n")
 checklist.append("\n投稿前 P0（必须补）：\n")
 p0 = [
-    "GitHub 仓库 + Zenodo DOI；确保 16,200+ 次运行可一键复现（复现包已就绪，含 LICENSE / CITATION.cff / requirements.txt）。",
-    "BUPT 机构邮箱（2138385347@bupt.edu.cn，见主编意见 A6）；ORCID 待补。",
-    "核对页数 < 20 页（当前 15 页）；最终校对。",
-    "Funding / Conflict of Interest 最终定稿（Funding 现为 “no external funding”）。",
+    "GitHub 仓库：本地仓库已 git init 并提交（64 文件，复现包就绪）；待你提供 GitHub 用户名后补 CITATION.cff/zenodo.json 的 URL 并 push。Zenodo 元数据 zenodo.json 已就绪，待你 deposit 获得 DOI。",
+    "BUPT 机构邮箱（2138385347@bupt.edu.cn，见主编意见 A6）✅；ORCID 待补（需你提供 ORCID iD）。",
+    "核对页数 < 20 页：v2.0 PDF = 16 页 ✅；最终校对 ✅（E13 审计 0 问题）。",
+    "Funding（no external funding）/ Conflict of Interest（no conflict）已定稿 ✅。",
 ]
 for k, item in enumerate(p0, 1):
     checklist.append(f"{k}. {item}\n")
-checklist.append("\n作者信息（已完成）：Nian Liu†（一作兼通讯），International School, Beijing University of Posts and Telecommunications；邮箱 2138385347@bupt.edu.cn。标题页 / 投稿信 / 作者贡献 / 作者简介 / CITATION.cff 已同步；ORCID 待补。\n")
+checklist.append("\n作者信息（已完成）：Nian Liu†（一作兼通讯），International School, Beijing University of Posts and Telecommunications；邮箱 2138385347@bupt.edu.cn。标题页 / 投稿信 / 作者贡献 / 作者简介 / CITATION.cff 已同步；ORCID 待补（需你提供 ORCID iD）。\n")
 checklist.append("\n方案B 优化（已补，见正文 Fig.1–5 与 §3.3/§6.7/§6.8）：V* 敏感性表 + E2/E3 用 V* 重跑（E9，契约 FR 21.2%->10.9%）；C2 在 GE 突发下实证并推导 L_B 阈值（L_B≲7 包≈0.6–0.7s@10Hz）；真实 trace 复核（E11）+ 可用度预算（E12）；五张 IEEE 分辨率配图；一键复现包（论文实验/复现包/）。\n")
 checklist.append("\n原稿中标记的 [TBD] 清单（已在此版移除，仅作追踪）：\n")
 seen = []
